@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import javax.swing.JFrame;
 
 public class Frame extends JFrame {
-	
+	// test comment to see if pushing to branch using git bash worked
 	private Graphics g;
 
 	public Frame() {
