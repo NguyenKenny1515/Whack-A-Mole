@@ -1,31 +1,36 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
+/**
+ * Displays the entire game inside JFrame.
+ */
 public class Frame extends JFrame {
-	
-	private Graphics g;
 
 	public Frame() {
 		JFrame frame = new JFrame("Hello");
-	    	frame.setSize(950,950);
+		frame.setSize(950,950);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 
-		frame.paint(g);
-		frame.getContentPane().setBackground(Color.CYAN);
+		final Hole hole = new Hole(50, 50, 0, 0);
+		ShapeIcon icon = new ShapeIcon(hole, 50, 50);
+		JLabel aLabel = new JLabel(icon);
+
+		frame.add(aLabel);
+		frame.getContentPane().setBackground(Color.GREEN);
 		frame.setVisible(true);
-	}
-	
-	// Move this to a different class.    
-	public void paintComponent(Graphics g) {
-	 	super.paintComponents(g);
-	   	g.setColor(Color.RED);
-       		g.drawOval(100, 100, 50, 50);
-	 }
 
-	
+		final int DELAY = 0;
+		// Milliseconds between timer ticks
+		Timer t = new Timer(DELAY, event ->
+		{
+			hole.grow();
+			aLabel.repaint();
+		});
+		t.start();
+	}
+
 	public static void main(String[] args) {
 		Frame x = new Frame();
 		System.out.println(x);
