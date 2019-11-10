@@ -7,8 +7,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.Icon;
 
-public class Mole implements GrowableShape
-{
+public class Mole implements GrowableShape {
 	private int x;
 	private int y;
 	private int size;
@@ -32,12 +31,12 @@ public class Mole implements GrowableShape
 
 	public void grow() {
 		size++;
-		height ++;
+		height++;
 	}
 
 	public void shrink() {
 		size--;
-		height --;
+		height--;
 	}
 
 	public void draw(Graphics2D g2) {
