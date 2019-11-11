@@ -10,7 +10,7 @@ public class Frame extends JFrame {
 
 	public Frame() {
 		
-		JFrame frame = new JFrame("Hello");
+		JFrame frame = new JFrame("Whack-A-Mole");
 		frame.setSize(950,950);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -18,20 +18,11 @@ public class Frame extends JFrame {
 		
 		final Hole hole = new Hole(250, 300, 0, 0);
 		scene.add(hole);
-		//ShapeIcon holeIcon = new ShapeIcon(hole, 50, 50);
-		//JLabel holeLabel = new JLabel(holeIcon);
-
 		final Mole mole = new Mole(250, 300, 0, 0);
 		scene.add(mole);
-		//ShapeIcon moleIcon = new ShapeIcon(mole, 10, 10);
-		//JLabel moleLabel = new JLabel(moleIcon);
 
-		//frame.add(holeLabel);
-		//frame.add(moleLabel);
 		frame.add(scene);
-
 		frame.getContentPane().setBackground(Color.GREEN);
-
 		frame.setVisible(true);
 
 		final int DELAY = 5;
@@ -46,13 +37,10 @@ public class Frame extends JFrame {
 				hole.shrink();
 				mole.shrink();
 			}
-
-			//holeLabel.repaint();
-			//moleLabel.repaint();
 			scene.repaint();
-
 		});
 		t.start();
+
 		while (true) {
 			if (hole.getStatus() == Status.GROWING && hole.getWidth() > 250) {
 				hole.setStatus(Status.SHRINKING);
