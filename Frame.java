@@ -9,15 +9,16 @@ import javax.swing.border.Border;
 public class Frame extends JFrame {
 
 	public Frame() {
+		
 		JFrame frame = new JFrame("Hello");
 		frame.setSize(950,950);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		final Hole hole = new Hole(50, 50, 0, 0);
+		final Hole hole = new Hole(50, 50, 30, 40);
 		ShapeIcon holeIcon = new ShapeIcon(hole, 50, 50);
 		JLabel holeLabel = new JLabel(holeIcon);
 
-		final Mole mole = new Mole(250, 300, 0, 0);
+		final Mole mole = new Mole(250, 300, 30, 40);
 		ShapeIcon moleIcon = new ShapeIcon(mole, 10, 10);
 		JLabel moleLabel = new JLabel(moleIcon);
 
