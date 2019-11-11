@@ -83,5 +83,9 @@ public class Mole implements GrowableShape {
 		g2.draw(leftNostril);
 		g2.draw(rightNostril);
 	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
 }
 

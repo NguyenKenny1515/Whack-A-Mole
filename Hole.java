@@ -70,4 +70,16 @@ public class Hole implements GrowableShape {
         g2.draw(hole);
         g2.fill(hole);
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
 }
