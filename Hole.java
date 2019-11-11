@@ -21,8 +21,8 @@ public class Hole implements GrowableShape {
 
     /**
      Constructs a Hole (ellipse).
-     @param x the X coordinate of the upper-left corner of the framing rectangle of the Ellipse
-     @param y the Y coordinate of the upper-left corner of the framing rectangle of the Ellipse
+     @param x the X coordinate of the center of the Ellipse
+     @param y the Y coordinate of the center of the Ellipse
      @param width the width of the Hole
      @param height the height of the Hole
      */
@@ -45,7 +45,7 @@ public class Hole implements GrowableShape {
     }
 
     public void draw(Graphics2D g2) {
-        Ellipse2D.Double hole = new Ellipse2D.Double(x, y, width, height);
+        Ellipse2D.Double hole = new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);
         g2.setColor(Color.BLACK);
         g2.draw(hole);
         g2.fill(hole);

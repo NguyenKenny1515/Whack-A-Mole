@@ -1,11 +1,8 @@
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import javax.swing.Icon;
 
 public class Mole implements GrowableShape {
 	private int x;
@@ -59,3 +56,4 @@ public class Mole implements GrowableShape {
 		g2.draw(rightNostril);
 	}
 }
+

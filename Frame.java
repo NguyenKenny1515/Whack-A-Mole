@@ -14,16 +14,22 @@ public class Frame extends JFrame {
 		frame.setSize(950,950);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		final Hole hole = new Hole(50, 50, 30, 40);
-		ShapeIcon holeIcon = new ShapeIcon(hole, 50, 50);
-		JLabel holeLabel = new JLabel(holeIcon);
+		final SceneComponent scene = new SceneComponent();
+		
+		final Hole hole = new Hole(250, 300, 0, 0);
+		scene.add(hole);
+		//ShapeIcon holeIcon = new ShapeIcon(hole, 50, 50);
+		//JLabel holeLabel = new JLabel(holeIcon);
 
-		final Mole mole = new Mole(250, 300, 30, 40);
-		ShapeIcon moleIcon = new ShapeIcon(mole, 10, 10);
-		JLabel moleLabel = new JLabel(moleIcon);
+		final Mole mole = new Mole(250, 300, 0, 0);
+		scene.add(mole);
+		//ShapeIcon moleIcon = new ShapeIcon(mole, 10, 10);
+		//JLabel moleLabel = new JLabel(moleIcon);
 
-		frame.add(holeLabel);
-		frame.add(moleLabel);
+		//frame.add(holeLabel);
+		//frame.add(moleLabel);
+		frame.add(scene);
+
 		frame.getContentPane().setBackground(Color.GREEN);
 
 		frame.setVisible(true);
@@ -40,8 +46,11 @@ public class Frame extends JFrame {
 				hole.shrink();
 				mole.shrink();
 			}
-			holeLabel.repaint();
-			moleLabel.repaint();
+
+			//holeLabel.repaint();
+			//moleLabel.repaint();
+			scene.repaint();
+
 		});
 		t.start();
 		while (true) {
