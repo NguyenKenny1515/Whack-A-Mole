@@ -11,7 +11,7 @@ import javax.swing.Timer;
  */
 public class Mole implements GrowableShape {
 
-	private static final int FULL_SIZE = 150;
+	private static final int FULL_SIZE = 100;
 
 	private int x;
 	private int y;
