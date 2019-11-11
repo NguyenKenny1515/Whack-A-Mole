@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 
 /**
  * Displays the entire game inside JFrame.
@@ -49,8 +48,15 @@ public class Frame extends JFrame {
 		scene.add(hole5);
 		scene.add(mole);
 
-		frame.add(scene);
-		frame.getContentPane().setBackground(Color.GREEN);
+		// Changes default Windows cursor to custom hammer image
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image image = toolkit.getImage("src\\hammer.png");
+        Image scaledImage = image.getScaledInstance(500, 500, Image.SCALE_DEFAULT);
+		Cursor cursor = toolkit.createCustomCursor(scaledImage , new Point(frame.getX(), frame.getY()), "hammer");
+
+        frame.add(scene);
+        frame.getContentPane().setBackground(Color.GREEN);
+		frame.setCursor(cursor);
 		frame.setVisible(true);
 
 		// Remaining code below excluding main is for testing purposes. To be removed later.
@@ -126,5 +132,7 @@ public class Frame extends JFrame {
 
 	public static void main(String[] args) {
 		Frame x = new Frame();
+		Audio a = new Audio("src\\GameMusic.wav");
+		a.play();
 	}
 }
