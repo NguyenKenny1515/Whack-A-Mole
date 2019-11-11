@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.geom.*;
 
+import javax.swing.Timer;
+
 enum Status {GROWING, SHRINKING}
 
 /**
@@ -17,7 +19,9 @@ public class Hole implements GrowableShape {
     private int y;
     private int width;
     private int height;
+    private boolean animating = true;
     private Status status;
+    private static final int FULL_SIZE = 200;
 
     /**
      Constructs a Hole (ellipse).
@@ -34,15 +38,30 @@ public class Hole implements GrowableShape {
         this.status = Status.GROWING;
     }
 
-    public void grow() {
-        width += 2;
-        height++;
-    }
-
-    public void shrink() {
-        width -= 2;
-        height--;
-    }
+    public void addAnimateTimer(Timer t)
+	{
+		t.addActionListener(animateEvent ->
+		{
+			if (animating && this.width < FULL_SIZE && status == Status.GROWING)
+			{
+				this.width += 2;
+				this.height ++;
+				if (this.width >= FULL_SIZE) { animating = false; status = Status.SHRINKING; }
+			}
+			else if (animating && this.width > 0 && status == Status.SHRINKING)
+			{
+				this.width -= 2;
+				this.height --;
+				if (this.width <= 0) { animating = false; status = Status.GROWING; }
+			}
+		}
+		);
+	}
+	
+	public void animate()
+	{
+		this.animating = true;
+	}
 
     public void draw(Graphics2D g2) {
         Ellipse2D.Double hole = new Ellipse2D.Double(x - (width/2), y - (height/2), width, height);

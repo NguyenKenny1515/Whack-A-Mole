@@ -1,5 +1,7 @@
 import java.awt.*;
 
+import javax.swing.Timer;
+
 /**
  * A shape that can change its size. Shapes that need to grow/shrink will implement this interface.
  *
@@ -16,12 +18,7 @@ public interface GrowableShape {
     void draw(Graphics2D g2);
 
     /**
-     Increases the size of the shape.
+     Increases or decreases the size of the shape.
      */
-    void grow();
-
-    /**
-     Decreases the size of the shape.
-     */
-    void shrink();
+    void animate();
 }

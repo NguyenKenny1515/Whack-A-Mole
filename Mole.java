@@ -3,14 +3,18 @@ import java.awt.Graphics2D;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import javax.swing.Timer;
 
 public class Mole implements GrowableShape {
 	private int x;
 	private int y;
 	private int size;
 	private int height;
+	private boolean animating = true;
+	private Status status = Status.GROWING;
 	private static final Color MOLE_COLOR = new Color(0xD0A43D);
 	private static final Color NOSE_COLOR = new Color(0xF299B1);
+	private static final int FULL_SIZE = 150;
 
 	/**
 	 * Constructs a Mole
@@ -25,15 +29,30 @@ public class Mole implements GrowableShape {
 		this.size = width;
 		this.height = startHeight;
 	}
-
-	public void grow() {
-		size++;
-		height++;
+	
+	public void addAnimateTimer(Timer t)
+	{
+		t.addActionListener(animateEvent ->
+		{
+			if (animating && this.size < FULL_SIZE && status == Status.GROWING)
+			{
+				this.size ++;
+				this.height ++;
+				if (this.size == FULL_SIZE) { animating = false; status = Status.SHRINKING; }
+			}
+			else if (animating && this.size > 0 && status == Status.SHRINKING)
+			{
+				this.size --;
+				this.height --;
+				if (this.size == 0) { animating = false; status = Status.GROWING; }
+			}
+		}
+		);
 	}
-
-	public void shrink() {
-		size--;
-		height--;
+	
+	public void animate()
+	{
+		this.animating = true;
 	}
 
 	public void draw(Graphics2D g2) {

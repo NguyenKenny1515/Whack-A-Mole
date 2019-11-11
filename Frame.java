@@ -17,16 +17,10 @@ public class Frame extends JFrame {
 		
 		final Hole hole = new Hole(250, 300, 0, 0);
 		scene.add(hole);
-		//ShapeIcon holeIcon = new ShapeIcon(hole, 50, 50);
-		//JLabel holeLabel = new JLabel(holeIcon);
 
 		final Mole mole = new Mole(250, 300, 0, 0);
 		scene.add(mole);
-		//ShapeIcon moleIcon = new ShapeIcon(mole, 10, 10);
-		//JLabel moleLabel = new JLabel(moleIcon);
 
-		//frame.add(holeLabel);
-		//frame.add(moleLabel);
 		frame.add(scene);
 		frame.getContentPane().setBackground(Color.GREEN);
 
@@ -36,30 +30,20 @@ public class Frame extends JFrame {
 		// Milliseconds between timer ticks
 		Timer t = new Timer(DELAY, event ->
 		{
-			if (hole.getStatus() == Status.GROWING) {
-				hole.grow();
-				mole.grow();
-			}
-			else {
-				hole.shrink();
-				mole.shrink();
-			}
-			//holeLabel.repaint();
-			//moleLabel.repaint();
 			scene.repaint();
 		});
+		hole.addAnimateTimer(t);
+		mole.addAnimateTimer(t);
 		t.start();
-		while (true) {
-			if (hole.getStatus() == Status.GROWING && hole.getWidth() > 250) {
-				hole.setStatus(Status.SHRINKING);
-			}
-			else if (hole.getStatus() == Status.SHRINKING && hole.getWidth() <= 1) {
-				t.stop();
-				break;
-			}
-			System.out.println("Running"); // DO NOT REMOVE OR ELSE ANIMATION WILL BREAK
+		
+		// Note: this is just a demo to show that every time you call GrowableShape.animate(), it performs one full grow/shrink animation
+		Timer animator = new Timer(3000, animationEvent ->
+		{
+			hole.animate();
+			mole.animate();
 		}
-		System.out.println("No longer running");
+		);
+		animator.start();
 	}
 
 	public static void main(String[] args) {
