@@ -1,4 +1,7 @@
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -9,49 +12,116 @@ import javax.swing.border.Border;
 public class Frame extends JFrame {
 
 	public Frame() {
-		
+
 		JFrame frame = new JFrame("Whack-A-Mole");
-		frame.setSize(950,950);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		// Set frame size to computer's screen size
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setSize(screenSize.width, screenSize.height);
+
+
 		final SceneComponent scene = new SceneComponent();
-		
-		final Hole hole = new Hole(250, 300, 0, 0);
-		scene.add(hole);
+
+		// Generates random x and y coordinate values for Holes
+		int a = (int) (Math.random() * (450 - 100)) + 100;
+		int b = (int) (Math.random() * (450 - 50) ) + 60;
+		int c = (int) (Math.random() * (900 - 600)) + 600;
+		int d = (int) (Math.random() * (400 - 100) ) + 100;
+		int e = (int) (Math.random() * (400 - 100) ) + 100;
+		int f = (int) (Math.random() * (900 - 600)) + 600;
+		int g = (int) (Math.random() * (900 - 600)) + 600;
+		int h = (int) (Math.random() * (900 - 600)) + 600;
+		int i = (int) (Math.random() * (750 - 450)) + 450;
+		int j = (int) (Math.random() * (750 - 450)) + 450;
+
+		// Creates 5 Holes and Mole and adds them to the scene
+		final Hole hole = new Hole(a, b, 0, 0);
+		final Hole hole2 = new Hole(c, d, 0, 0);
+		final Hole hole3 = new Hole(e, f, 0, 0);
+		final Hole hole4 = new Hole(g, h, 0, 0);
+		final Hole hole5 = new Hole(i, j, 0, 0);
 		final Mole mole = new Mole(250, 300, 0, 0);
+		scene.add(hole);
+		scene.add(hole2);
+		scene.add(hole3);
+		scene.add(hole4);
+		scene.add(hole5);
 		scene.add(mole);
 
 		frame.add(scene);
 		frame.getContentPane().setBackground(Color.GREEN);
 		frame.setVisible(true);
 
+		// Remaining code below excluding main is for testing purposes. To be removed later.
 		final int DELAY = 5;
-		// Milliseconds between timer ticks
 		Timer t = new Timer(DELAY, event ->
 		{
-			if (hole.getStatus() == Status.GROWING) {
-				hole.grow();
-				mole.grow();
-			}
-			else {
-				hole.shrink();
-				mole.shrink();
-			}
 			scene.repaint();
 		});
+		hole.addAnimateTimer(t);
+		hole2.addAnimateTimer(t);
+		hole3.addAnimateTimer(t);
+		hole4.addAnimateTimer(t);
+		hole5.addAnimateTimer(t);
+		mole.addAnimateTimer(t);
 		t.start();
 
-		while (true) {
-			if (hole.getStatus() == Status.GROWING && hole.getWidth() > 250) {
-				hole.setStatus(Status.SHRINKING);
+
+		ArrayList<Integer> xCoord = new ArrayList<>();
+		xCoord.add(a);
+		xCoord.add(c);
+		xCoord.add(e);
+		xCoord.add(g);
+		xCoord.add(i);
+
+		Map<Integer, Integer> XtoY = new HashMap<>();
+
+		ArrayList<Integer> yCoord = new ArrayList<>();
+		yCoord.add(b);
+		yCoord.add(d);
+		yCoord.add(f);
+		yCoord.add(h);
+		yCoord.add(j);
+
+		// Note: this is just a demo to show that every time you call GrowableShape.animate(), it performs one full
+		// grow/shrink animation
+		Timer animator = new Timer(3000, animationEvent ->
+		{
+			// If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
+			if (hole.getWidth() == 0) {
+				//top left circle
+				hole.setX((int) (Math.random() * (450 - 100)) + 100);
+				hole.setY((int) (Math.random() * (450 - 50)) + 60);
+
+				//top right circle
+				hole2.setX((int) (Math.random() * (900 - 600)) + 600);
+				hole2.setY((int) (Math.random() * (400 - 100)) + 100);
+
+				//bottom left circle
+				hole3.setX((int) (Math.random() * (400 - 100)) + 100);
+				hole3.setY((int) (Math.random() * (900 - 600)) + 600);
+
+				//bottom right circle
+				hole4.setX((int) (Math.random() * (900 - 600)) + 600);
+				hole4.setY((int) (Math.random() * (900 - 600)) + 600);
+
+				//middle hole, 5 holes total. This one will need editing to avoid overlapping
+				hole5.setX((int) (Math.random() * (750 - 450)) + 450);
+				hole5.setY((int) (Math.random() * (750 - 450)) + 450);
+
+				mole.setX((int) (Math.random() * (450 - 100)) + 100);
 			}
-			else if (hole.getStatus() == Status.SHRINKING && hole.getWidth() <= 1) {
-				t.stop();
-				break;
-			}
-			System.out.println("Running"); // DO NOT REMOVE OR ELSE ANIMATION WILL BREAK
+
+			hole.animate();
+			hole2.animate();
+			hole3.animate();
+			hole4.animate();
+			hole5.animate();
+			mole.animate();
 		}
-		System.out.println("No longer running");
+		);
+		animator.start();
 	}
 
 	public static void main(String[] args) {
