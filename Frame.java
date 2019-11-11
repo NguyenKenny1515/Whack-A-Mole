@@ -9,49 +9,41 @@ import javax.swing.border.Border;
 public class Frame extends JFrame {
 
 	public Frame() {
-		
+
 		JFrame frame = new JFrame("Whack-A-Mole");
 		frame.setSize(950,950);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		final SceneComponent scene = new SceneComponent();
-		
-		final Hole hole = new Hole(250, 300, 0, 0);
+
+		final GrowableShape hole = new Hole(250, 300, 0, 0);
 		scene.add(hole);
-		final Mole mole = new Mole(250, 300, 0, 0);
+		final GrowableShape mole = new Mole(250, 300, 0, 0);
 		scene.add(mole);
 
 		frame.add(scene);
 		frame.getContentPane().setBackground(Color.GREEN);
 		frame.setVisible(true);
 
+		// Remaining code below excluding main is for testing purposes. To be removed later.
 		final int DELAY = 5;
-		// Milliseconds between timer ticks
 		Timer t = new Timer(DELAY, event ->
 		{
-			if (hole.getStatus() == Status.GROWING) {
-				hole.grow();
-				mole.grow();
-			}
-			else {
-				hole.shrink();
-				mole.shrink();
-			}
 			scene.repaint();
 		});
+		hole.addAnimateTimer(t);
+		mole.addAnimateTimer(t);
 		t.start();
 
-		while (true) {
-			if (hole.getStatus() == Status.GROWING && hole.getWidth() > 250) {
-				hole.setStatus(Status.SHRINKING);
-			}
-			else if (hole.getStatus() == Status.SHRINKING && hole.getWidth() <= 1) {
-				t.stop();
-				break;
-			}
-			System.out.println("Running"); // DO NOT REMOVE OR ELSE ANIMATION WILL BREAK
+		// Note: this is just a demo to show that every time you call GrowableShape.animate(), it performs one full
+		// grow/shrink animation
+		Timer animator = new Timer(3000, animationEvent ->
+		{
+			hole.animate();
+			mole.animate();
 		}
-		System.out.println("No longer running");
+		);
+		animator.start();
 	}
 
 	public static void main(String[] args) {
