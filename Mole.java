@@ -1,5 +1,4 @@
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
@@ -41,8 +40,7 @@ public class Mole implements GrowableShape {
 	 * @param t the animation Timer
 	 */
 	public void addAnimateTimer(Timer t) {
-		t.addActionListener(animateEvent ->
-		{
+		t.addActionListener(animateEvent -> {
 			if (animating && this.size < FULL_SIZE && status == Status.GROWING) {
 				this.size++;
 				this.height++;
@@ -53,8 +51,7 @@ public class Mole implements GrowableShape {
 				this.height--;
 				if (this.size == 0) { animating = false; status = Status.GROWING; }
 			}
-		}
-		);
+		});
 	}
 
 	/**
@@ -84,8 +81,15 @@ public class Mole implements GrowableShape {
 		g2.draw(rightNostril);
 	}
 
+	public boolean contains(Point point) {
+		return true;
+	}
+
 	public void setX(int x) {
 		this.x = x;
 	}
-}
 
+	public void setY(int y) {
+		this.y = y;
+	}
+}
