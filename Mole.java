@@ -1,24 +1,21 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.Timer;
 
-/**
- * A Mole that will randomly pop out of one of the five randomly placed Holes. Will shrink after a certain time or
- * disappear if it has been clicked on.
- */
 public class Mole implements GrowableShape {
-
-	private static final int FULL_SIZE = 100;
-
-	private int x;
-	private int y;
+	public int x;
+	public int y;
 	private int size;
 	private int height;
-	private boolean animating;
-	private Status status;
+	private boolean animating = true;
+	private Status status = Status.GROWING;
+	private static final Color MOLE_COLOR = new Color(0xD0A43D);
+	private static final Color NOSE_COLOR = new Color(0xF299B1);
+	private static final int FULL_SIZE = 100;
 
 	/**
 	 * Constructs a Mole
@@ -32,35 +29,37 @@ public class Mole implements GrowableShape {
 		this.y = yCoord;
 		this.size = width;
 		this.height = startHeight;
-		this.animating = true;
-		this.status = Status.GROWING;
 	}
-
-	/**
-	 * Adds an animation Timer to Mole that determines when the Hole should grow/shrink and when it should stop
-	 * @param t the animation Timer
-	 */
-	public void addAnimateTimer(Timer t) {
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	public void addAnimateTimer(Timer t)
+	{
 		t.addActionListener(animateEvent ->
 		{
-			if (animating && this.size < FULL_SIZE && status == Status.GROWING) {
-				this.size++;
-				this.height++;
+			if (animating && this.size < FULL_SIZE && status == Status.GROWING)
+			{
+				this.size ++;
+				this.height ++;
 				if (this.size == FULL_SIZE) { animating = false; status = Status.SHRINKING; }
 			}
-			else if (animating && this.size > 0 && status == Status.SHRINKING) {
-				this.size--;
-				this.height--;
+			else if (animating && this.size > 0 && status == Status.SHRINKING)
+			{
+				this.size --;
+				this.height --;
 				if (this.size == 0) { animating = false; status = Status.GROWING; }
 			}
 		}
 		);
 	}
-
-	/**
-	 * Sets the animating  to true if the Mole is currently in animation (growing/shrinking)
-	 */
-	public void animate() {
+	
+	public void animate() 
+	{
 		this.animating = true;
 	}
 
@@ -74,18 +73,18 @@ public class Mole implements GrowableShape {
 		Ellipse2D.Double rightNostril = new Ellipse2D.Double(x + (size/12), y - height - size/6, size/8,
 				size/8);
 
-		g2.setColor(new Color(0xD0A43D));
+		g2.setColor(MOLE_COLOR);
 		g2.fill(head);
 		g2.fill(body);
-		g2.setColor(new Color(0xF299B1));
+		g2.setColor(NOSE_COLOR);
 		g2.fill(nose);
 		g2.setColor(Color.BLACK);
 		g2.draw(leftNostril);
 		g2.draw(rightNostril);
 	}
 
-	public void setX(int x) {
-		this.x = x;
+	public boolean contains(Point point) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }
-

@@ -1,138 +1,214 @@
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  * Displays the entire game inside JFrame.
  */
 public class Frame extends JFrame {
-
+	
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		public int screenWidth = screenSize.width;
+		public int screenHeight = screenSize.height;
+	
 	public Frame() {
+		
+		JFrame frame = new JFrame("Whack-a-mole");
 
-		JFrame frame = new JFrame("Whack-A-Mole");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		// Set frame size to computer's screen size
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setSize(screenSize.width, screenSize.height);
-
-
 		final SceneComponent scene = new SceneComponent();
+		JOptionPane.showMessageDialog(null, "Press Ok To Start","Start", JOptionPane.INFORMATION_MESSAGE);
+		
+		frame.setSize(screenWidth, screenHeight);
+	
+		JLabel background = new JLabel("");
+		background.setIcon(new ImageIcon("src\\background.png"));
+		background.setBounds(0,0,screenWidth,screenHeight);
+	
 
-		// Generates random x and y coordinate values for Holes
-		int a = (int) (Math.random() * (450 - 100)) + 100;
-		int b = (int) (Math.random() * (450 - 50) ) + 60;
-		int c = (int) (Math.random() * (900 - 600)) + 600;
-		int d = (int) (Math.random() * (400 - 100) ) + 100;
-		int e = (int) (Math.random() * (400 - 100) ) + 100;
-		int f = (int) (Math.random() * (900 - 600)) + 600;
-		int g = (int) (Math.random() * (900 - 600)) + 600;
-		int h = (int) (Math.random() * (900 - 600)) + 600;
-		int i = (int) (Math.random() * (750 - 450)) + 450;
-		int j = (int) (Math.random() * (750 - 450)) + 450;
+		//frame.setResizable(false);
+		
 
-		// Creates 5 Holes and Mole and adds them to the scene
-		final Hole hole = new Hole(a, b, 0, 0);
-		final Hole hole2 = new Hole(c, d, 0, 0);
-		final Hole hole3 = new Hole(e, f, 0, 0);
-		final Hole hole4 = new Hole(g, h, 0, 0);
-		final Hole hole5 = new Hole(i, j, 0, 0);
-		final Mole mole = new Mole(250, 300, 0, 0);
+		// 8 Holes total, in a checkered pattern. The original (first) appearance (we want the screen to be blank at first,
+		//but we have to declare the holes to be somewhere on the screen
+		
+		//Set the X value to -100 so it animates out of screen so no holes are first seen
+		//top left
+		final Hole hole = new Hole(-100, 0, 0, 0);
 		scene.add(hole);
+		
+		//top middle
+		final Hole hole1 = new Hole(-100, 0, 0, 0);
+		scene.add(hole1);
+		
+		//top right
+		final Hole hole2 = new Hole(-100, 0, 0, 0);
 		scene.add(hole2);
+		
+		//middle left
+		final Hole hole3 = new Hole(-100, 0, 0, 0);
 		scene.add(hole3);
+		//middle right
+		final Hole hole4 = new Hole(-100, 0, 0, 0);
 		scene.add(hole4);
+		//bottom left
+		final Hole hole5 = new Hole(-100, 0, 0, 0);
 		scene.add(hole5);
+		//bottom middle
+		final Hole hole6 = new Hole(-100, 0, 0, 0);
+		scene.add(hole6);
+
+		//the mole
+		Mole mole = new Mole(-100, 0, 0, 0);
 		scene.add(mole);
 
-		// Changes default Windows cursor to custom hammer image
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image image = toolkit.getImage("src\\hammer.png");
-        Image scaledImage = image.getScaledInstance(500, 500, Image.SCALE_DEFAULT);
-		Cursor cursor = toolkit.createCustomCursor(scaledImage , new Point(frame.getX(), frame.getY()), "hammer");
+		frame.add(scene);
 
-        frame.add(scene);
-        frame.getContentPane().setBackground(Color.GREEN);
-		frame.setCursor(cursor);
+
 		frame.setVisible(true);
+		
+		
+		frame.add(background);
 
-		// Remaining code below excluding main is for testing purposes. To be removed later.
-		final int DELAY = 5;
-		Timer t = new Timer(DELAY, event ->
-		{
+		// hard = 0, medium = 5, easy = 10
+		final int DELAY = 0;
+		// Milliseconds between timer ticks
+		Timer t = new Timer(DELAY, event -> {
 			scene.repaint();
 		});
+
 		hole.addAnimateTimer(t);
+		hole1.addAnimateTimer(t);
 		hole2.addAnimateTimer(t);
 		hole3.addAnimateTimer(t);
 		hole4.addAnimateTimer(t);
 		hole5.addAnimateTimer(t);
+		hole6.addAnimateTimer(t);
+
 		mole.addAnimateTimer(t);
 		t.start();
 
+		ArrayList<Hole> holes = new ArrayList<Hole>();
 
-		ArrayList<Integer> xCoord = new ArrayList<>();
-		xCoord.add(a);
-		xCoord.add(c);
-		xCoord.add(e);
-		xCoord.add(g);
-		xCoord.add(i);
-
-		Map<Integer, Integer> XtoY = new HashMap<>();
-
-		ArrayList<Integer> yCoord = new ArrayList<>();
-		yCoord.add(b);
-		yCoord.add(d);
-		yCoord.add(f);
-		yCoord.add(h);
-		yCoord.add(j);
-
-		// Note: this is just a demo to show that every time you call GrowableShape.animate(), it performs one full
-		// grow/shrink animation
-		Timer animator = new Timer(3000, animationEvent ->
-		{
-			// If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
+		// Note: this is just a demo to show that every time you call
+		// GrowableShape.animate(), it performs one full grow/shrink animation
+		Timer animator = new Timer(1000, animationEvent -> {
+			// if any of the holes shrink down to 0, find a new random x and y to respawn
 			if (hole.getWidth() == 0) {
-				//top left circle
-				hole.setX((int) (Math.random() * (450 - 100)) + 100);
-				hole.setY((int) (Math.random() * (450 - 50)) + 60);
+				
+				// hole 1 - top left Math.random() * (maximum - minimum) + 100)
+				// X coordinate
+				int q = (int) (Math.random() * (screenWidth / 5 - 100)) + 100;
+				// Y coordinate
+				int q1 = (int) (Math.random() * (screenHeight / 3 - 50)) + 60;
 
-				//top right circle
-				hole2.setX((int) (Math.random() * (900 - 600)) + 600);
-				hole2.setY((int) (Math.random() * (400 - 100)) + 100);
+				// hole 2 - top middle
+				// x coordinate
+				int q2 = (int) (Math.random() * (screenWidth * 3 / 5 - screenWidth * 2 / 5)) + screenWidth * 2 / 5;
+				// y coordinate
+				int q3 = (int) (Math.random() * (screenHeight / 3 - 100)) + 100;
 
-				//bottom left circle
-				hole3.setX((int) (Math.random() * (400 - 100)) + 100);
-				hole3.setY((int) (Math.random() * (900 - 600)) + 600);
+				// hole 3 top right
+				int q4 = (int) (Math.random() * ((screenWidth - 100) - screenWidth * 4 / 5)) + screenWidth * 4 / 5;
+				int q5 = (int) (Math.random() * (screenHeight / 3 - 100)) + 100;
 
-				//bottom right circle
-				hole4.setX((int) (Math.random() * (900 - 600)) + 600);
-				hole4.setY((int) (Math.random() * (900 - 600)) + 600);
+				// hole 4 left middle
+				int q6 = (int) (Math.random() * (screenWidth * 2 / 5 - screenWidth / 5)) + screenWidth / 5;
+				int q7 = (int) (Math.random() * (screenHeight * 2 / 3 - screenHeight / 3)) + screenHeight / 3;
 
-				//middle hole, 5 holes total. This one will need editing to avoid overlapping
-				hole5.setX((int) (Math.random() * (750 - 450)) + 450);
-				hole5.setY((int) (Math.random() * (750 - 450)) + 450);
+				// hole5 right middle
+				int q8 = (int) (Math.random() * (screenWidth * 4 / 5 - screenWidth * 3 / 5)) + screenWidth * 3 / 5;
+				int q9 = (int) (Math.random() * (screenHeight * 2 / 3 - screenHeight / 3)) + screenHeight / 3;
 
-				mole.setX((int) (Math.random() * (450 - 100)) + 100);
+				// hole6 bottom left
+				int q10 = (int) (Math.random() * (screenWidth / 5 - 100)) + 100;
+				int q11 = (int) (Math.random() * ((screenHeight - 100) - screenHeight * 2 / 3)) + screenHeight * 2 / 3;
+
+				// hole7 bottom middle
+				int q12 = (int) (Math.random() * (screenWidth * 3 / 5 - screenWidth * 2 / 5)) + screenWidth * 2 / 5;
+				int q13 = (int) (Math.random() * ((screenHeight - 100) - screenHeight * 2 / 3)) + screenHeight * 2 / 3;
+
+				// top left circle
+				hole.x = q;
+				hole.y = q1;
+
+				// top middle circle
+				hole1.x = q2;
+				hole1.y = q3;
+
+				// top right circle
+				hole2.x = q4;
+				hole2.y = q5;
+
+				// middle left circle
+				hole3.x = q6;
+				hole3.y = q7;
+
+				// middle right circle
+				hole4.x = q8;
+				hole4.y = q9;
+
+				// bottom left circle
+				hole5.x = q10;
+				hole5.y = q11;
+
+				// bottom middle circle
+				hole6.x = q12;
+				hole6.y = q13;
+
+			
+
+				// add all 8 random holes into an arraylist
+				holes.add(hole);
+				holes.add(hole1);
+				holes.add(hole2);
+				holes.add(hole3);
+				holes.add(hole4);
+				holes.add(hole5);
+				holes.add(hole6);
+
+
+				// random index to choose from array
+				int index = (int) (Math.random() * 7 - 0) + 0;
+				// Pick the random hole for the mole to come out of
+				Hole theone = holes.get(index);
+				mole.x = theone.x;
+				mole.y = theone.y;
+	
 			}
 
+		
 			hole.animate();
+			hole1.animate();
 			hole2.animate();
 			hole3.animate();
 			hole4.animate();
 			hole5.animate();
+			hole6.animate();
+	
+			
+			// add a delay here
+	
 			mole.animate();
-		}
-		);
+		
+
+		});
 		animator.start();
+
+	
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
 		Frame x = new Frame();
-		Audio a = new Audio("src\\GameMusic.wav");
-		a.play();
+
+		
 	}
 }
