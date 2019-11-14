@@ -11,7 +11,7 @@ public class Frame extends JFrame {
 
         JFrame frame = new JFrame("Whack-A-Mole");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        //werwewrwerwerwerwerwererw
         // Set frame size to computer's screen size
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(screenSize.width, screenSize.height);
