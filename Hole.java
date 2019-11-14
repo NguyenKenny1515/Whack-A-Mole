@@ -8,17 +8,20 @@ enum Status {GROWING, SHRINKING}
 /**
  * A black, static Hole that expands when a Mole randomly pops out of it. The Hole will then shrink back down to
  * its initial size when the Mole disappears.
+ *
+ * @author Kenny Nguyen
+ * @version 1.0
+ * @since 2019-11-1
  */
 public class Hole implements GrowableShape {
 
-    private static final int FULL_SIZE = 200;
-
-    private int x;
-    private int y;
+    public int x;
+    public int y;
     private int width;
     private int height;
-    private boolean animating;
+    private boolean animating = true;
     private Status status;
+    private static final int FULL_SIZE = 200;
 
     /**
      Constructs a Hole (ellipse).
@@ -32,35 +35,31 @@ public class Hole implements GrowableShape {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.animating = true;
         this.status = Status.GROWING;
     }
 
-    /**
-     * Adds an animation Timer to Hole that determines when the Hole should grow/shrink and when it should stop
-     * @param t the animation Timer
-     */
-    public void addAnimateTimer(Timer t) {
+    public void addAnimateTimer(Timer t)
+	{
 		t.addActionListener(animateEvent ->
 		{
-			if (animating && this.width < FULL_SIZE && status == Status.GROWING) {
+			if (animating && this.width < FULL_SIZE && status == Status.GROWING)
+			{
 				this.width += 2;
-				this.height++;
+				this.height ++;
 				if (this.width >= FULL_SIZE) { animating = false; status = Status.SHRINKING; }
 			}
-			else if (animating && this.width > 0 && status == Status.SHRINKING) {
+			else if (animating && this.width > 0 && status == Status.SHRINKING)
+			{
 				this.width -= 2;
-				this.height--;
+				this.height --;
 				if (this.width <= 0) { animating = false; status = Status.GROWING; }
 			}
 		}
 		);
 	}
-
-    /**
-     * Sets the animating  to true if the Hole is currently in animation (growing/shrinking)
-     */
-	public void animate() {
+	
+	public void animate()
+	{
 		this.animating = true;
 	}
 
@@ -72,14 +71,26 @@ public class Hole implements GrowableShape {
     }
 
     public int getWidth() {
-        return width;
+        return this.width;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public int getHeight() {
+    	return this.height;
+    }
+    public Status getStatus() {
+        return status;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public void setStatus(Status status) {
+        this.status = status;
     }
+    
+    public String toString() {
+    	return "X: " + this.x + " " + "Y: " + this.y;
+    }
+
+	public boolean contains(Point point) {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }
