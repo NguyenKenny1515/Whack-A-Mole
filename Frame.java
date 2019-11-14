@@ -59,7 +59,7 @@ public class Frame extends JFrame {
             // If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
             if (hole.getWidth() == 0) {
                 //bottom left
-                hole.setX((int) (Math.random() * (screenSize.width / 5 - 100)) + 100);
+                hole.setX((int) (Math.random() * (screenSize.width / 5 - 125)) + 125);
                 hole.setY((int) (Math.random() * ((screenSize.height - 100) - screenSize.height * 5/7)) +
                         screenSize.height * 5/7);
 
@@ -70,28 +70,28 @@ public class Frame extends JFrame {
                         screenSize.height * 3/4));
 
                 // bottom right middle
-                hole3.setX((int) (Math.random() * (((screenSize.width * 3/4 )- screenSize.width /2) -
-                        screenSize.width / 2)) +
+                hole3.setX((int) (Math.random() * (((screenSize.width * 3/4 - 50 )- screenSize.width /2 - 25) -
+                        screenSize.width / 2 - 25)) +
                         screenSize.width * 4 / 5);
-                hole3.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4)) +
-                        screenSize.height * 3/4));
+                hole3.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4 + 20)) +
+                        screenSize.height * 3/4 + 20));
 
                 // bottom right
-                hole4.setX((int) (Math.random() *( (screenSize.width - 200) - screenSize.width * 4 / 5 + 50)) +
-                        screenSize.width * 4 / 5 + 50);
-                hole4.setY((int) (Math.random() * ((screenSize.height - 100 ) - screenSize.height * 2 / 3 + 5)) +
-                        screenSize.height * 2 / 3 + 5);
+                hole4.setX((int) (Math.random() *( (screenSize.width * 3/4) - screenSize.width * 3/4 + 100)) +
+                        screenSize.width * 3/4 + 100);
+                hole4.setY((int) (Math.random() * ((screenSize.height - 125 ) - screenSize.height * 2 / 3 + 5 + 25)) +
+                        screenSize.height * 2 / 3 + 25);
 
                 // top left
-                hole5.setX((int) (Math.random() * (screenSize.width / 2  - screenSize.width /4)) +
+                hole5.setX((int) (Math.random() * ((screenSize.width / 2 - 25)  - screenSize.width /4)) +
                         screenSize.width / 4);
                 hole5.setY((int) (Math.random() * ((screenSize.height * 3/4 - 100 ) - screenSize.height * 3/5 + 25)) +
                         screenSize.height  * 3 / 5 + 25);
 
                 // top right
-                hole6.setX((int) (Math.random() * ((screenSize.width * 6 /7 - 250) - screenSize.width * 4/7)) +
-                        screenSize.width * 4/7);
-                hole6.setY((int) (Math.random() * ((screenSize.height * 4/5 ) - screenSize.height * 3/5)) +
+                hole6.setX((int) (Math.random() * ((screenSize.width * 6 /7 - 250) - screenSize.width * 4/7) - 25) +
+                        screenSize.width * 4/7 - 25);
+                hole6.setY((int) (Math.random() * ((screenSize.height * 4/5 - 75 ) - screenSize.height * 3/5)) +
                         screenSize.height  * 3/5);
 
                 holes.add(hole);
