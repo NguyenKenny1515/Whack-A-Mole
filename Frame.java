@@ -73,12 +73,12 @@ public class Frame extends JFrame {
                 hole3.setX((int) (Math.random() * (((screenSize.width * 3/4 - 50 )- screenSize.width /2 - 25) -
                         screenSize.width / 2 - 25)) +
                         screenSize.width * 4 / 5);
-                hole3.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4 + 20)) +
-                        screenSize.height * 3/4 + 20));
+                hole3.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4 + 5)) +
+                        screenSize.height * 3/4 + 5));
 
                 // bottom right
-                hole4.setX((int) (Math.random() *( (screenSize.width * 3/4) - screenSize.width * 3/4 + 100)) +
-                        screenSize.width * 3/4 + 100);
+                hole4.setX((int) (Math.random() *( (screenSize.width * 3/4) - screenSize.width * 3/4 + 125)) +
+                        screenSize.width * 3/4 + 125);
                 hole4.setY((int) (Math.random() * ((screenSize.height - 125 ) - screenSize.height * 2 / 3 + 5 + 25)) +
                         screenSize.height * 2 / 3 + 25);
 
