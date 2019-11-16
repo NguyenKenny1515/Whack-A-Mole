@@ -66,12 +66,15 @@ public class Frame extends JFrame {
             	scene.time = scene.time - 1;
             	
             	 if(scene.time == 0) {
-            	        int x = JOptionPane.showOptionDialog(null, "GAME OVER!!!! Your score was: " + scene.score,
+            	        int x = JOptionPane.showOptionDialog(null, "GAME OVER! Your score was: " + scene.score,
             	                "Click a button",
             	                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
             	        System.out.println(x);
             	        if(x == 2) {
             	        	 	System.exit(0);
+            	        }else if(x == 0) {
+            	        	scene.time = 60;
+            	        	scene.score = 0;
             	        }
                 	 
                 }

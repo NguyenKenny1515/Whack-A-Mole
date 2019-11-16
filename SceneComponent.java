@@ -10,7 +10,7 @@ import javax.swing.JComponent;
  */
 public class SceneComponent extends JComponent{
 
-	public int time = 5;
+	public int time = 10;
 	public int score;
 	
 	private ArrayList<GrowableShape> shapes;
@@ -47,9 +47,7 @@ public class SceneComponent extends JComponent{
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
 		g.drawString("SCORE: " + score, 1, 30);
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
-		
-		
-				// TODO Auto-generated catch block
+		// TODO Auto-generated catch block
 
 		g.drawString("TIMER: " + time, 1750 , 30);
 	
