@@ -17,6 +17,9 @@ public class Frame extends JFrame {
         frame.setSize(screenSize.width, screenSize.height);
 
         final SceneComponent scene = new SceneComponent();
+        
+  
+
 
         // Prototype menu screen
         JOptionPane.showMessageDialog(null, "Press Ok To Start","Start",
@@ -52,12 +55,26 @@ public class Frame extends JFrame {
         mole.addAnimateTimer(t);
         t.start();
 
+        String[] options = {"Play again", "Main Menu" , "Exit"};
+        
         // Generate random hole and mole locations and have them start appearing
         ArrayList<Hole> holes = new ArrayList<>();
-        Timer animator = new Timer(1000, animationEvent ->
+        Timer animator = new Timer(500, animationEvent ->
         {
             // If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
             if (hole.getWidth() == 0) {
+            	scene.time = scene.time - 1;
+            	
+            	 if(scene.time == 0) {
+            	        int x = JOptionPane.showOptionDialog(null, "GAME OVER!!!! Your score was: " + scene.score,
+            	                "Click a button",
+            	                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            	        System.out.println(x);
+            	        if(x == 2) {
+            	        	 	System.exit(0);
+            	        }
+                	 
+                }
                 //bottom left
                 hole.setX((int) (Math.random() * (screenSize.width / 5 - 125)) + 125);
                 hole.setY((int) (Math.random() * ((screenSize.height - 100) - screenSize.height * 5/7)) +
@@ -121,6 +138,7 @@ public class Frame extends JFrame {
         );
         animator.start();
 
+       
         // Changes default Windows cursor to custom hammer image
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Image image = toolkit.getImage("src\\hammer.png");
