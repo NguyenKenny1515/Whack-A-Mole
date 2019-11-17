@@ -18,13 +18,11 @@ public class Frame extends JFrame {
 
         final SceneComponent scene = new SceneComponent();
         
+ 
+
   
-
-
-        // Prototype menu screen
-        JOptionPane.showMessageDialog(null, "Press Ok To Start","Start",
-                JOptionPane.INFORMATION_MESSAGE);
-
+        
+        String name = JOptionPane.showInputDialog("Enter Player Name");
         // Creates 5 Holes and Mole and adds them to the scene
         final Hole hole = new Hole(-100, 0, 0, 0);
         final Hole hole2 = new Hole(-100, 0, 0, 0);
@@ -55,26 +53,46 @@ public class Frame extends JFrame {
         mole.addAnimateTimer(t);
         t.start();
 
-        String[] options = {"Play again", "Main Menu" , "Exit"};
+        String[] options = {"Play again", "Main Menu" , "Hi-Scores", "Exit"};
+        JLabel hiscoreName = new JLabel();
+        hiscoreName.setBounds(0,0,300,500);
+        JLabel hiscoreNumber = new JLabel();
         
         // Generate random hole and mole locations and have them start appearing
         ArrayList<Hole> holes = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<String>();
+        names.add(name);
         Timer animator = new Timer(500, animationEvent ->
         {
+        
             // If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
             if (hole.getWidth() == 0) {
+            	if(scene.time >= 0) {
             	scene.time = scene.time - 1;
-            	
+            	}
             	 if(scene.time == 0) {
             	        int x = JOptionPane.showOptionDialog(null, "GAME OVER! Your score was: " + scene.score,
             	                "Click a button",
             	                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-            	        System.out.println(x);
-            	        if(x == 2) {
+            	        if(x == 3) {
             	        	 	System.exit(0);
             	        }else if(x == 0) {
-            	        	scene.time = 60;
+            	        	String name2 = JOptionPane.showInputDialog("Enter Player Name");
+            	        	names.add(name2);
+            	        	scene.time = 5;
             	        	scene.score = 0;
+            	        }else if (x == 2) {
+            	        	JFrame hiscores = new JFrame();
+            	        	for(String q: names) {
+            	        		hiscoreName.setText(q + "\n");
+            	        	}
+            	        	
+            	        	hiscores.add(hiscoreName);
+            	        	hiscores.add(hiscoreNumber);
+            	        	hiscores.setSize(300,600);
+            	        	hiscores.setLayout(new FlowLayout());
+            	        	hiscores.setVisible(true);
+            	    
             	        }
                 	 
                 }

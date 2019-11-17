@@ -10,7 +10,7 @@ import javax.swing.JComponent;
  */
 public class SceneComponent extends JComponent{
 
-	public int time = 10;
+	public int time = 5;
 	public int score;
 	
 	private ArrayList<GrowableShape> shapes;
