@@ -10,14 +10,13 @@ import javax.swing.JComponent;
  */
 public class SceneComponent extends JComponent{
 
-	public int time = 5;
-	public int score;
-	
+	private int time;
+	private int score;
 	private ArrayList<GrowableShape> shapes;
 
-
 	public SceneComponent() {
-		shapes = new ArrayList<>();
+		this.shapes = new ArrayList<>();
+		this.time = 60;
 	}
 
 	/**
@@ -32,26 +31,28 @@ public class SceneComponent extends JComponent{
 	public int getTime() {
 		return time;
 	}
-	
-		
-		
-	
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		for (GrowableShape s : shapes) {
+		for (GrowableShape s : shapes)
 			s.draw(g2);
-			}
-	
-		
+
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
 		g.drawString("SCORE: " + score, 1, 30);
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
-		// TODO Auto-generated catch block
-
 		g.drawString("TIMER: " + time, 1750 , 30);
-	
-
 	}
 
 	//Timer timer = new Timer();
