@@ -17,11 +17,8 @@ public class Frame extends JFrame {
         frame.setSize(screenSize.width, screenSize.height);
 
         final SceneComponent scene = new SceneComponent();
-
-        // Prototype menu screen
-        JOptionPane.showMessageDialog(null, "Press Ok To Start","Start",
-                JOptionPane.INFORMATION_MESSAGE);
-
+        
+        String name = JOptionPane.showInputDialog("Enter Player Name");
         // Creates 5 Holes and Mole and adds them to the scene
         final Hole hole = new Hole(-100, 0, 0, 0);
         final Hole hole2 = new Hole(-100, 0, 0, 0);
@@ -52,14 +49,50 @@ public class Frame extends JFrame {
         mole.addAnimateTimer(t);
         t.start();
 
+        String[] options = {"Play again", "Main Menu" , "Hi-Scores", "Exit"};
+        JLabel hiscoreName = new JLabel();
+        hiscoreName.setBounds(0,0,300,500);
+        JLabel hiscoreNumber = new JLabel();
+        
         // Generate random hole and mole locations and have them start appearing
         ArrayList<Hole> holes = new ArrayList<>();
-        Timer animator = new Timer(1000, animationEvent ->
-        {
+        ArrayList<String> names = new ArrayList<>();
+        names.add(name);
+        Timer animator = new Timer(500, animationEvent -> {
             // If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
             if (hole.getWidth() == 0) {
+
+            	if(scene.getTime() >= 0) {
+            	    scene.setTime(scene.getTime() - 1);
+            	}
+                if(scene.getTime() == 0) {
+                    int x = JOptionPane.showOptionDialog(null, "GAME OVER! Your score was: " +
+                                    "" + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                    if(x == 3) {
+                        System.exit(0);
+                    }
+                    else if(x == 0) {
+                        String name2 = JOptionPane.showInputDialog("Enter Player Name");
+                        names.add(name2);
+                        scene.setTime(5);
+                        scene.setScore(0);
+                    }
+                    else if (x == 2) {
+                        JFrame hiscores = new JFrame();
+                        for (String q: names)
+                            hiscoreName.setText(q + "\n");
+            	        	
+                        hiscores.add(hiscoreName);
+                        hiscores.add(hiscoreNumber);
+                        hiscores.setSize(300,600);
+                        hiscores.setLayout(new FlowLayout());
+                        hiscores.setVisible(true);
+                    }
+                }
+
                 //bottom left
-                hole.setX((int) (Math.random() * (screenSize.width / 5 - 100)) + 100);
+                hole.setX((int) (Math.random() * (screenSize.width / 5 - 125)) + 125);
                 hole.setY((int) (Math.random() * ((screenSize.height - 100) - screenSize.height * 5/7)) +
                         screenSize.height * 5/7);
 
@@ -70,28 +103,28 @@ public class Frame extends JFrame {
                         screenSize.height * 3/4));
 
                 // bottom right middle
-                hole3.setX((int) (Math.random() * (((screenSize.width * 3/4 )- screenSize.width /2) -
-                        screenSize.width / 2)) +
+                hole3.setX((int) (Math.random() * (((screenSize.width * 3/4 - 50 )- screenSize.width /2 - 25) -
+                        screenSize.width / 2 - 25)) +
                         screenSize.width * 4 / 5);
-                hole3.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4)) +
-                        screenSize.height * 3/4));
+                hole3.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4 + 5)) +
+                        screenSize.height * 3/4 + 5));
 
                 // bottom right
-                hole4.setX((int) (Math.random() *( (screenSize.width - 200) - screenSize.width * 4 / 5 + 50)) +
-                        screenSize.width * 4 / 5 + 50);
-                hole4.setY((int) (Math.random() * ((screenSize.height - 100 ) - screenSize.height * 2 / 3 + 5)) +
-                        screenSize.height * 2 / 3 + 5);
+                hole4.setX((int) (Math.random() *( (screenSize.width * 3/4) - screenSize.width * 3/4 + 125)) +
+                        screenSize.width * 3/4 + 125);
+                hole4.setY((int) (Math.random() * ((screenSize.height - 125 ) - screenSize.height * 2 / 3 + 5 + 25)) +
+                        screenSize.height * 2 / 3 + 25);
 
                 // top left
-                hole5.setX((int) (Math.random() * (screenSize.width / 2  - screenSize.width /4)) +
+                hole5.setX((int) (Math.random() * ((screenSize.width / 2 - 25)  - screenSize.width /4)) +
                         screenSize.width / 4);
                 hole5.setY((int) (Math.random() * ((screenSize.height * 3/4 - 100 ) - screenSize.height * 3/5 + 25)) +
                         screenSize.height  * 3 / 5 + 25);
 
                 // top right
-                hole6.setX((int) (Math.random() * ((screenSize.width * 6 /7 - 250) - screenSize.width * 4/7)) +
-                        screenSize.width * 4/7);
-                hole6.setY((int) (Math.random() * ((screenSize.height * 4/5 ) - screenSize.height * 3/5)) +
+                hole6.setX((int) (Math.random() * ((screenSize.width * 6 /7 - 250) - screenSize.width * 4/7) - 25) +
+                        screenSize.width * 4/7 - 25);
+                hole6.setY((int) (Math.random() * ((screenSize.height * 4/5 - 75 ) - screenSize.height * 3/5)) +
                         screenSize.height  * 3/5);
 
                 holes.add(hole);
@@ -121,6 +154,7 @@ public class Frame extends JFrame {
         );
         animator.start();
 
+       
         // Changes default Windows cursor to custom hammer image
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Image image = toolkit.getImage("src\\hammer.png");

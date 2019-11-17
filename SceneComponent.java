@@ -1,20 +1,22 @@
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.Timer;
-import java.util.*;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+import javax.swing.JComponent;
 
 /**
  * A component that shows a scene composed of shapes that is displayed by Frame.
  */
-public class SceneComponent extends JComponent {
+public class SceneComponent extends JComponent{
 
-	public static final int TIME = 60;
-
+	private int time;
+	private int score;
 	private ArrayList<GrowableShape> shapes;
-	public int score;
 
 	public SceneComponent() {
-		shapes = new ArrayList<>();
+		this.shapes = new ArrayList<>();
+		this.time = 60;
 	}
 
 	/**
@@ -25,15 +27,32 @@ public class SceneComponent extends JComponent {
 		shapes.add(s);
 		repaint();
 	}
+	
+	public int getTime() {
+		return time;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
+		for (GrowableShape s : shapes)
+			s.draw(g2);
+
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
 		g.drawString("SCORE: " + score, 1, 30);
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
-		g.drawString("TIMER: " + TIME, 1750 , 30);
-		for (GrowableShape s : shapes)
-			s.draw(g2);
+		g.drawString("TIMER: " + time, 1750 , 30);
 	}
 
 	//Timer timer = new Timer();
