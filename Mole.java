@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.Timer;
 
@@ -17,6 +18,7 @@ public class Mole implements GrowableShape {
 	private int size;
 	private int height;
 	private boolean animating;
+	private boolean hittable;
 	private Status status;
 
 	/**
@@ -32,6 +34,7 @@ public class Mole implements GrowableShape {
 		this.size = width;
 		this.height = startHeight;
 		this.animating = true;
+    this.hittable = true;
 		this.status = Status.GROWING;
 	}
 
@@ -59,6 +62,7 @@ public class Mole implements GrowableShape {
 	 */
 	public void animate() {
 		this.animating = true;
+		if (status == Status.GROWING) hittable = true;
 	}
 
 	public void draw(Graphics2D g2) {
@@ -80,10 +84,13 @@ public class Mole implements GrowableShape {
 		g2.draw(leftNostril);
 		g2.draw(rightNostril);
 	}
-
-	public boolean contains(Point point) {
-		return true;
-	}
+	
+	/**
+	 * Occurs when a mole is whacked at a valid time (hasn't been hit before on this animation cycle)
+	 */
+	public void hit() {
+		hittable = false;
+  }
 
 	public void setX(int x) {
 		this.x = x;
@@ -92,4 +99,12 @@ public class Mole implements GrowableShape {
 	public void setY(int y) {
 		this.y = y;
 	}
+	
+	public boolean isHittable() {
+		return this.hittable;
+	}
+	
+   public boolean contains(Point2D p) {
+      return x-(size/2) <= p.getX() && x+(size/2) >= p.getX() && y-height-(size/2) <= p.getY() && y >= p.getY();
+   }
 }

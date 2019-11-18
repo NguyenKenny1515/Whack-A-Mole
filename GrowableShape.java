@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 import javax.swing.Timer;
 
@@ -24,4 +25,6 @@ public interface GrowableShape {
      * @param t the animation Timer
      */
     void addAnimateTimer(Timer t);
+
+    boolean contains(Point2D p);
 }
