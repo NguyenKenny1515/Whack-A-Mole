@@ -1,52 +1,181 @@
 import java.awt.*;
-
+import java.util.ArrayList;
 import javax.swing.*;
-import javax.swing.border.Border;
 
 /**
  * Displays the entire game inside JFrame.
  */
 public class Frame extends JFrame {
 
-	public Frame() {
-		JFrame frame = new JFrame("Hello");
-		frame.setSize(950,950);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public Frame() {
 
-		final SceneComponent scene = new SceneComponent();
-		
-		final Hole hole = new Hole(250, 300, 0, 0);
-		scene.add(hole);
+        JFrame frame = new JFrame("Whack-A-Mole");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		final Mole mole = new Mole(250, 300, 0, 0);
-		scene.add(mole);
+        // Set frame size to computer's screen size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setSize(screenSize.width, screenSize.height);
 
-		frame.add(scene);
-		frame.getContentPane().setBackground(Color.GREEN);
+        final SceneComponent scene = new SceneComponent();
+        
+        String name = JOptionPane.showInputDialog("Enter Player Name");
+        // Creates 5 Holes and Mole and adds them to the scene
+        final Hole hole = new Hole(-100, 0, 0, 0);
+        final Hole hole2 = new Hole(-100, 0, 0, 0);
+        final Hole hole3 = new Hole(-100, 0, 0, 0);
+        final Hole hole4 = new Hole(-100, 0, 0, 0);
+        final Hole hole5 = new Hole(-100, 0, 0, 0);
+        final Hole hole6 = new Hole(-100, 0, 0, 0);
+        final Mole mole = new Mole(-100, 0, 0, 0);
+        scene.add(hole);
+        scene.add(hole2);
+        scene.add(hole3);
+        scene.add(hole4);
+        scene.add(hole5);
+        scene.add(hole6);
+        scene.add(mole);
 
-		frame.setVisible(true);
+        // Sets up holes and mole on screen
+        final int DELAY = 0;
+        Timer t = new Timer(DELAY, event -> {
+            scene.repaint();
+        });
+        hole.addAnimateTimer(t);
+        hole2.addAnimateTimer(t);
+        hole3.addAnimateTimer(t);
+        hole4.addAnimateTimer(t);
+        hole5.addAnimateTimer(t);
+        hole6.addAnimateTimer(t);
+        mole.addAnimateTimer(t);
+        t.start();
 
-		final int DELAY = 5;
-		// Milliseconds between timer ticks
-		Timer t = new Timer(DELAY, event ->
-		{
-			scene.repaint();
-		});
-		hole.addAnimateTimer(t);
-		mole.addAnimateTimer(t);
-		t.start();
-		
-		// Note: this is just a demo to show that every time you call GrowableShape.animate(), it performs one full grow/shrink animation
-		Timer animator = new Timer(3000, animationEvent ->
-		{
-			hole.animate();
-			mole.animate();
-		}
-		);
-		animator.start();
-	}
+        String[] options = {"Play again", "Main Menu" , "Hi-Scores", "Exit"};
+        JLabel hiscoreName = new JLabel();
+        hiscoreName.setBounds(0,0,300,500);
+        JLabel hiscoreNumber = new JLabel();
+        
+        // Generate random hole and mole locations and have them start appearing
+        ArrayList<Hole> holes = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
+        names.add(name);
+        Timer animator = new Timer(500, animationEvent -> {
+            // If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
+            if (hole.getWidth() == 0) {
 
-	public static void main(String[] args) {
-		Frame x = new Frame();
-	}
+            	if(scene.getTime() >= 0) {
+            	    scene.setTime(scene.getTime() - 1);
+            	}
+                if(scene.getTime() == 0) {
+                    int x = JOptionPane.showOptionDialog(null, "GAME OVER! Your score was: " +
+                                    "" + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                    if(x == 3) {
+                        System.exit(0);
+                    }
+                    else if(x == 0) {
+                        String name2 = JOptionPane.showInputDialog("Enter Player Name");
+                        names.add(name2);
+                        scene.setTime(5);
+                        scene.setScore(0);
+                    }
+                    else if (x == 2) {
+                        JFrame hiscores = new JFrame();
+                        for (String q: names)
+                            hiscoreName.setText(q + "\n");
+            	        	
+                        hiscores.add(hiscoreName);
+                        hiscores.add(hiscoreNumber);
+                        hiscores.setSize(300,600);
+                        hiscores.setLayout(new FlowLayout());
+                        hiscores.setVisible(true);
+                    }
+                }
+
+                //bottom left
+                hole.setX((int) (Math.random() * (screenSize.width / 5 - 125)) + 125);
+                hole.setY((int) (Math.random() * ((screenSize.height - 100) - screenSize.height * 5/7)) +
+                        screenSize.height * 5/7);
+
+                // bottom left middle
+                hole2.setX((int) (Math.random() * (screenSize.width /2 - screenSize.width /4)) +
+                        screenSize.width /4);
+                hole2.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4)) +
+                        screenSize.height * 3/4));
+
+                // bottom right middle
+                hole3.setX((int) (Math.random() * (((screenSize.width * 3/4 - 50 )- screenSize.width /2 - 25) -
+                        screenSize.width / 2 - 25)) +
+                        screenSize.width * 4 / 5);
+                hole3.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4 + 5)) +
+                        screenSize.height * 3/4 + 5));
+
+                // bottom right
+                hole4.setX((int) (Math.random() *( (screenSize.width * 3/4) - screenSize.width * 3/4 + 125)) +
+                        screenSize.width * 3/4 + 125);
+                hole4.setY((int) (Math.random() * ((screenSize.height - 125 ) - screenSize.height * 2 / 3 + 5 + 25)) +
+                        screenSize.height * 2 / 3 + 25);
+
+                // top left
+                hole5.setX((int) (Math.random() * ((screenSize.width / 2 - 25)  - screenSize.width /4)) +
+                        screenSize.width / 4);
+                hole5.setY((int) (Math.random() * ((screenSize.height * 3/4 - 100 ) - screenSize.height * 3/5 + 25)) +
+                        screenSize.height  * 3 / 5 + 25);
+
+                // top right
+                hole6.setX((int) (Math.random() * ((screenSize.width * 6 /7 - 250) - screenSize.width * 4/7) - 25) +
+                        screenSize.width * 4/7 - 25);
+                hole6.setY((int) (Math.random() * ((screenSize.height * 4/5 - 75 ) - screenSize.height * 3/5)) +
+                        screenSize.height  * 3/5);
+
+                holes.add(hole);
+                holes.add(hole2);
+                holes.add(hole3);
+                holes.add(hole4);
+                holes.add(hole5);
+                holes.add(hole6);
+
+                // Pick the random hole for the mole to come out of
+                int random = (int) (Math.random() * 6 - 0) + 0;
+                Hole randomHole = holes.get(random);
+                mole.setX(randomHole.getX());
+                mole.setY(randomHole.getY());
+            }
+
+            hole.animate();
+            hole2.animate();
+            hole3.animate();
+            hole4.animate();
+            hole5.animate();
+            hole6.animate();
+
+            // Add delay here so mole doesn't come out too fast
+            mole.animate();
+        }
+        );
+        animator.start();
+
+       
+        // Changes default Windows cursor to custom hammer image
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Image image = toolkit.getImage("src\\hammer.png");
+        Image scaledImage = image.getScaledInstance(500, 500, Image.SCALE_DEFAULT);
+        Cursor cursor = toolkit.createCustomCursor(scaledImage , new Point(frame.getX(), frame.getY()), "hammer");
+        frame.setCursor(cursor);
+
+        // Sets background.png as wallpaper
+        JLabel background = new JLabel("");
+        background.setIcon(new ImageIcon("src\\background.png"));
+        background.setBounds(0,0, screenSize.width, screenSize.height);
+
+        // Must appear in this order or else png gets masked over holes & mole
+        frame.add(scene);
+        frame.setVisible(true);
+        frame.add(background);
+    }
+
+    public static void main(String[] args) {
+        Frame x = new Frame();
+        Audio a = new Audio("src\\GameMusic.wav");
+        a.play();
+    }
 }

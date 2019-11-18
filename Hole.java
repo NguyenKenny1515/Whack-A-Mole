@@ -96,8 +96,7 @@ public class Hole implements GrowableShape {
         return y;
     }
     
-    public boolean contains(Point2D p)
-    {
-    	return false;	// we never want to give points for clicking on a hole, and this is the lazy way of doing that
+    public boolean contains(Point2D p) {
+        return false;	// we never want to give points for clicking on a hole, and this is the lazy way of doing that
     }
-    }
+}

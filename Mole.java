@@ -18,7 +18,7 @@ public class Mole implements GrowableShape {
 	private int size;
 	private int height;
 	private boolean animating;
-	private boolean hittable = true;
+	private boolean hittable;
 	private Status status;
 
 	/**
@@ -34,6 +34,7 @@ public class Mole implements GrowableShape {
 		this.size = width;
 		this.height = startHeight;
 		this.animating = true;
+    this.hittable = true;
 		this.status = Status.GROWING;
 	}
 
@@ -87,10 +88,9 @@ public class Mole implements GrowableShape {
 	/**
 	 * Occurs when a mole is whacked at a valid time (hasn't been hit before on this animation cycle)
 	 */
-	public void hit()
-	{
+	public void hit() {
 		hittable = false;
-	}
+  }
 
 	public void setX(int x) {
 		this.x = x;
@@ -104,8 +104,7 @@ public class Mole implements GrowableShape {
 		return this.hittable;
 	}
 	
-   public boolean contains(Point2D p)
-   {
+   public boolean contains(Point2D p) {
       return x-(size/2) <= p.getX() && x+(size/2) >= p.getX() && y-height-(size/2) <= p.getY() && y >= p.getY();
    }
 }

@@ -24,15 +24,11 @@ public class SceneComponent extends JComponent{
 		addMouseListener(new MousePressedListener());
 	}
 	
-	private class MousePressedListener extends MouseAdapter
-	{
-		public void mousePressed(MouseEvent event)
-		{
+	private class MousePressedListener extends MouseAdapter {
+		public void mousePressed(MouseEvent event) {
 			mousePoint = event.getPoint();
-			for (GrowableShape s : shapes)
-			{
-				if (s.contains(mousePoint) && s.getClass() == Mole.class && ((Mole)s).isHittable())
-				{
+			for (GrowableShape s : shapes) {
+				if (s.contains(mousePoint) && s.getClass() == Mole.class && ((Mole)s).isHittable()) {
 					((Mole)s).hit();
 					score++;
 					break;
@@ -77,7 +73,8 @@ public class SceneComponent extends JComponent{
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
 		g.drawString("TIMER: " + time, 1750 , 30);
 	}
-
+  
+  // SUPPOSED TO BE THE ONE-MINUTE COUNTDOWN (KENNY START HERE)
 	//Timer timer = new Timer();
 	/*TimerTask task = new TimerTask() {
 		public void run() {
