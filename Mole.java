@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.Timer;
 
@@ -17,6 +18,7 @@ public class Mole implements GrowableShape {
 	private int size;
 	private int height;
 	private boolean animating;
+	private boolean hittable;
 	private Status status;
 
 	/**
@@ -32,6 +34,7 @@ public class Mole implements GrowableShape {
 		this.size = width;
 		this.height = startHeight;
 		this.animating = true;
+    	this.hittable = true;
 		this.status = Status.GROWING;
 	}
 
@@ -59,6 +62,7 @@ public class Mole implements GrowableShape {
 	 */
 	public void animate() {
 		this.animating = true;
+		if (status == Status.GROWING) hittable = true;
 	}
 
 	public void draw(Graphics2D g2) {
@@ -70,6 +74,10 @@ public class Mole implements GrowableShape {
 				size/8, size/8);
 		Ellipse2D.Double rightNostril = new Ellipse2D.Double(x + (size/12), y - height - size/6, size/8,
 				size/8);
+		Ellipse2D.Double leftEye = new Ellipse2D.Double(x - (size/12) - (size/10), y - height - size/2.5,
+				size/12, size/12);
+		Ellipse2D.Double rightEye = new Ellipse2D.Double(x + (size/12), y - height - size/2.5,
+				size/12, size/12);
 
 		g2.setColor(new Color(0xD0A43D));
 		g2.fill(head);
@@ -79,11 +87,18 @@ public class Mole implements GrowableShape {
 		g2.setColor(Color.BLACK);
 		g2.draw(leftNostril);
 		g2.draw(rightNostril);
+		g2.fill(leftEye);
+		g2.draw(leftEye);
+		g2.fill(rightEye);
+		g2.draw(rightEye);
 	}
-
-	public boolean contains(Point point) {
-		return true;
-	}
+	
+	/**
+	 * Occurs when a mole is whacked at a valid time (hasn't been hit before on this animation cycle)
+	 */
+	public void hit() {
+		hittable = false;
+  }
 
 	public void setX(int x) {
 		this.x = x;
@@ -92,4 +107,12 @@ public class Mole implements GrowableShape {
 	public void setY(int y) {
 		this.y = y;
 	}
+	
+	public boolean isHittable() {
+		return this.hittable;
+	}
+	
+   public boolean contains(Point2D p) {
+      return x-(size/2) <= p.getX() && x+(size/2) >= p.getX() && y-height-(size/2) <= p.getY() && y >= p.getY();
+   }
 }

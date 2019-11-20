@@ -19,6 +19,10 @@ public class Frame extends JFrame {
         final SceneComponent scene = new SceneComponent();
         
         String name = JOptionPane.showInputDialog("Enter Player Name");
+
+        Audio backgroundMusic = new Audio("src\\GameMusic.wav");
+        backgroundMusic.play();
+
         // Creates 5 Holes and Mole and adds them to the scene
         final Hole hole = new Hole(-100, 0, 0, 0);
         final Hole hole2 = new Hole(-100, 0, 0, 0);
@@ -66,6 +70,7 @@ public class Frame extends JFrame {
             	    scene.setTime(scene.getTime() - 1);
             	}
                 if(scene.getTime() == 0) {
+                    backgroundMusic.stop();
                     int x = JOptionPane.showOptionDialog(null, "GAME OVER! Your score was: " +
                                     "" + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
                             JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
@@ -75,8 +80,9 @@ public class Frame extends JFrame {
                     else if(x == 0) {
                         String name2 = JOptionPane.showInputDialog("Enter Player Name");
                         names.add(name2);
-                        scene.setTime(5);
+                        scene.setTime(60);
                         scene.setScore(0);
+                        backgroundMusic.play();
                     }
                     else if (x == 2) {
                         JFrame hiscores = new JFrame();
@@ -175,7 +181,5 @@ public class Frame extends JFrame {
 
     public static void main(String[] args) {
         Frame x = new Frame();
-        Audio a = new Audio("src\\GameMusic.wav");
-        a.play();
     }
 }
