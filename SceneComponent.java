@@ -15,6 +15,9 @@ public class SceneComponent extends JComponent{
 
 	private int time;
 	private int score;
+	private boolean newHit = false;
+	private int moleX;
+	private int moleY;
 	private Point mousePoint;
 	private ArrayList<GrowableShape> shapes;
 
@@ -31,6 +34,9 @@ public class SceneComponent extends JComponent{
 				if (s.contains(mousePoint) && s.getClass() == Mole.class && ((Mole)s).isHittable()) {
 					((Mole)s).hit();
 					score++;
+					newHit = true;
+					moleX = s.getX();
+					moleY = s.getY();
 					break;
 				}
 			}
@@ -62,16 +68,26 @@ public class SceneComponent extends JComponent{
 	public void setScore(int score) {
 		this.score = score;
 	}
+	
+	public void resetAnimate()
+	{
+		newHit = false;
+		moleX = 0;
+		moleY = 0;
+	}
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		for (GrowableShape s : shapes)
 			s.draw(g2);
-
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
 		g.drawString("SCORE: " + score, 1, 30);
 		g.setFont(new Font("Arial", Font.PLAIN, 30));
 		g.drawString("TIMER: " + time, 1750 , 30);
+		if (newHit)
+		{
+			g.drawString("+1", moleX-20, moleY - 175);
+		}
 	}
   
   // SUPPOSED TO BE THE ONE-MINUTE COUNTDOWN (KENNY START HERE)

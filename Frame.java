@@ -62,6 +62,7 @@ public class Frame extends JFrame {
             // If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
             if (hole.getWidth() == 0) {
 
+            	scene.resetAnimate();
             	if(scene.getTime() >= 0) {
             	    scene.setTime(scene.getTime() - 1);
             	}
@@ -75,7 +76,7 @@ public class Frame extends JFrame {
                     else if(x == 0) {
                         String name2 = JOptionPane.showInputDialog("Enter Player Name");
                         names.add(name2);
-                        scene.setTime(5);
+                        scene.setTime(59);
                         scene.setScore(0);
                     }
                     else if (x == 2) {
