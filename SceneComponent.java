@@ -1,7 +1,4 @@
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -17,11 +14,15 @@ public class SceneComponent extends JComponent{
 	private int score;
 	private Point mousePoint;
 	private ArrayList<GrowableShape> shapes;
+	private Dimension screenSize;
+	private Audio hitSound;
 
 	public SceneComponent() {
 		this.shapes = new ArrayList<>();
 		this.time = 60;
 		addMouseListener(new MousePressedListener());
+		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		hitSound = new Audio("src\\HitSound.wav");
 	}
 	
 	private class MousePressedListener extends MouseAdapter {
@@ -30,6 +31,7 @@ public class SceneComponent extends JComponent{
 			for (GrowableShape s : shapes) {
 				if (s.contains(mousePoint) && s.getClass() == Mole.class && ((Mole)s).isHittable()) {
 					((Mole)s).hit();
+					hitSound.play();
 					score++;
 					break;
 				}
@@ -68,10 +70,10 @@ public class SceneComponent extends JComponent{
 		for (GrowableShape s : shapes)
 			s.draw(g2);
 
-		g.setFont(new Font("Arial", Font.PLAIN, 30));
-		g.drawString("SCORE: " + score, 1, 30);
-		g.setFont(new Font("Arial", Font.PLAIN, 30));
-		g.drawString("TIMER: " + time, 1750 , 30);
+		g.setFont(new Font("Arial", Font.BOLD, 30));
+		g.drawString("SCORE: " + score, 0, 25);
+		g.setFont(new Font("Arial", Font.BOLD, 30));
+		g.drawString("TIMER: " + time, screenSize.width - 175 , 25);
 	}
   
   // SUPPOSED TO BE THE ONE-MINUTE COUNTDOWN (KENNY START HERE)

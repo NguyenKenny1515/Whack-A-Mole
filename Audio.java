@@ -27,7 +27,6 @@ public class Audio {
                 AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
                 clip = AudioSystem.getClip();
                 clip.open(audioInput);
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
             else {
                 System.out.println("Can't find file");
