@@ -27,4 +27,8 @@ public interface GrowableShape {
     void addAnimateTimer(Timer t);
 
     boolean contains(Point2D p);
+    
+    int getX();
+    
+    int getY();
 }

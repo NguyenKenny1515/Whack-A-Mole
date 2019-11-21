@@ -12,6 +12,9 @@ public class SceneComponent extends JComponent{
 
 	private int time;
 	private int score;
+	private boolean newHit = false;
+	private int moleX;
+	private int moleY;
 	private Point mousePoint;
 	private ArrayList<GrowableShape> shapes;
 	private Dimension screenSize;
@@ -34,6 +37,10 @@ public class SceneComponent extends JComponent{
 				if (s.contains(mousePoint) && s.getClass() == Mole.class && ((Mole)s).isHittable()) {
 					((Mole)s).hit();
 					score++;
+					newHit = true;
+					moleX = s.getX();
+					moleY = s.getY();
+					break;
 					hitSound.play();
 				}
 			}
@@ -90,6 +97,13 @@ public class SceneComponent extends JComponent{
 	public void setScore(int score) {
 		this.score = score;
 	}
+	
+	public void resetAnimate()
+	{
+		newHit = false;
+		moleX = 0;
+		moleY = 0;
+	}
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
@@ -106,5 +120,9 @@ public class SceneComponent extends JComponent{
 			g.setColor(Color.RED);
 
 		g.drawString("TIMER: " + time, screenSize.width - 370 , 65);
+    
+    if (newHit) {
+			g.drawString("+1", moleX-20, moleY - 175);
+		}
 	}
 }

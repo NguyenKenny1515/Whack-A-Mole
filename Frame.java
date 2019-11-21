@@ -72,6 +72,7 @@ public class Frame extends JFrame {
                 if (!scene.isTimerStarted())
                     scene.startTimer();
 
+                scene.resetAnimate();
                 if (scene.getTime() == 0) {
                     backgroundMusic.stop();
                     scene.setTimerStarted(false);

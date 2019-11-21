@@ -108,6 +108,16 @@ public class Mole implements GrowableShape {
 		this.y = y;
 	}
 	
+	public int getX()
+	{
+		return this.x;
+	}
+	
+	public int getY() 
+	{
+		return this.y;
+	}
+	
 	public boolean isHittable() {
 		return this.hittable;
 	}
