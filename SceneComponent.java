@@ -1,53 +1,81 @@
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JComponent;
 
 /**
- * A component that shows a scene composed of shapes that is displayed by Frame. Manages the entire game.
+ * A component that shows a scene composed of GrowableShapes displayed by Frame. Manages the score, timer, clicked sound
+ * effect and determining whether the Mole has been clicked for points.
  */
-public class SceneComponent extends JComponent{
+public class SceneComponent extends JComponent {
 
 	private int time;
 	private int score;
-	private boolean newHit = false;
-	private int moleX;
-	private int moleY;
 	private Point mousePoint;
 	private ArrayList<GrowableShape> shapes;
 	private Dimension screenSize;
 	private Audio hitSound;
 	private boolean timerStarted;
 
+	// For showing user the Mole has been clicked and they earned a point
+	private int moleX;
+	private int moleY;
+	private boolean moleHasBeenClicked;
+
+	/**
+	 * Creates a SceneComponent
+	 */
 	public SceneComponent() {
-		this.shapes = new ArrayList<>();
 		this.time = 60;
+		this.score = 0;
 		addMouseListener(new MousePressedListener());
-		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		hitSound = new Audio("src\\HitSound.wav");
-		timerStarted = false;
+		this.shapes = new ArrayList<>();
+		this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		this.hitSound = new Audio("src\\HitSound.wav");
+		this.timerStarted = false;
+
+		this.moleHasBeenClicked = false;
+		this.moleX = 0;
+		this.moleY = 0;
 	}
-	
+
+	/**
+	 Adds a shape to the scene.
+	 @param s the shape to add
+	 */
+	public void add(GrowableShape s) {
+		shapes.add(s);
+		repaint();
+	}
+
+	/**
+	 * If the Mole has been clicked on, update the score, tell user they scored a point, and play sound effect
+	 */
 	private class MousePressedListener extends MouseAdapter {
 		public void mousePressed(MouseEvent event) {
 			mousePoint = event.getPoint();
 			for (GrowableShape s : shapes) {
-				if (s.contains(mousePoint) && s.getClass() == Mole.class && ((Mole)s).isHittable()) {
-					((Mole)s).hit();
+				if (s.contains(mousePoint) && s.getClass() == Mole.class && ((Mole)s).isClickable()) {
+					((Mole)s).moleHasBeenClicked();
 					score++;
-					newHit = true;
-					moleX = s.getX();
-					moleY = s.getY();
-					break;
+					moleHasBeenClicked = true;
+					moleX = ((Mole)s).getX();
+					moleY = ((Mole)s).getY();
 					hitSound.play();
+					break;
 				}
 			}
 			repaint();         
 		}
 	}
 
+	/**
+	 * Starts the 60 seconds Timer aka the duration of one game
+	 */
 	public void startTimer() {
 		Thread thread = new Thread(new Runnable () {
 			@Override
@@ -65,64 +93,67 @@ public class SceneComponent extends JComponent{
 		timerStarted = true;
 	}
 
-	public int getTime() {
-		return time;
-	}
-
-	public void setTime(int time) {
-		this.time = time;
-	}
-
-	public boolean isTimerStarted() {
-		return timerStarted;
-	}
-
-	public void setTimerStarted(boolean timerStarted) {
-		this.timerStarted = timerStarted;
+	/**
+	 * Resets variables for the "earned a point" indicator since Holes and Mole are going to respawn to new locations
+	 */
+	public void resetAnimate() {
+		moleHasBeenClicked = false;
+		moleX = 0;
+		moleY = 0;
 	}
 
 	/**
-	 Adds a shape to the scene.
-	 @param s the shape to add
+	 * Draws the Holes, Mole, SCORE label, TIME Label onto the screen
+	 * @param g the graphics context
 	 */
-	public void add(GrowableShape s) {
-		shapes.add(s);
-		repaint();
+	public void paintComponent(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g;
+		for (GrowableShape s : shapes)
+			s.draw(g2);
+
+		g.setFont(new Font("Arial", Font.BOLD, 70));
+		g.setColor(Color.WHITE);
+		g.drawString("SCORE: " + score, 0, 65);
+		g.setFont(new Font("Arial", Font.BOLD, 70));
+
+		// Warning indicator for when there's less than 10 seconds remaining
+		if (time <= 10)
+			g.setColor(Color.RED);
+
+		g.drawString("TIME: " + time, screenSize.width - 370 , 65);
+
+		// If Mole has been clicked on, shows the "earned a point" indicator
+		if (moleHasBeenClicked) {
+			g.setColor(new Color(0x05820b));
+			g.drawString("+1", moleX - 40, moleY - 175);
+		}
+	}
+
+	/**
+	 * Checks whether the 60 second Timer has started
+	 * @return true if the Timer has started
+	 */
+	public boolean hasTimerStarted() {
+		return timerStarted;
+	}
+
+	public int getTime() {
+		return time;
 	}
 
 	public int getScore() {
 		return score;
 	}
 
+	public void setTimerStarted(boolean timerStarted) {
+		this.timerStarted = timerStarted;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
 	public void setScore(int score) {
 		this.score = score;
-	}
-	
-	public void resetAnimate()
-	{
-		newHit = false;
-		moleX = 0;
-		moleY = 0;
-	}
-
-	public void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		g.setColor(Color.BLACK);
-		for (GrowableShape s : shapes)
-			s.draw(g2);
-
-		g.setFont(new Font("Arial", Font.BOLD, 70));
-		g.drawString("SCORE: " + score, 0, 65);
-		g.setFont(new Font("Arial", Font.BOLD, 70));
-
-		// Warning indicator
-		if (time <= 10)
-			g.setColor(Color.RED);
-
-		g.drawString("TIMER: " + time, screenSize.width - 370 , 65);
-    
-    if (newHit) {
-			g.drawString("+1", moleX-20, moleY - 175);
-		}
 	}
 }
