@@ -7,6 +7,10 @@ import javax.swing.*;
  */
 public class Frame extends JFrame {
 
+    private static final int EASY = 800;
+    private static final int NORMAL = 650;
+    private static final int HARD = 500;
+
     public Frame() {
 
         // Creates the Frame
@@ -51,11 +55,11 @@ public class Frame extends JFrame {
         // Sets speed at which Holes and Mole spawn depending on difficulty selected
         int speed = 0;
         if (difficulty == 0)
-            speed = 500;
+            speed = EASY;
         else if (difficulty == 1)
-            speed = 250;
+            speed = NORMAL;
         else if (difficulty == 2)
-            speed = 10;
+            speed = HARD;
         else
             System.exit(0);
 
@@ -81,6 +85,7 @@ public class Frame extends JFrame {
 
         // Sets up holes and mole on screen and adds animation timers to them so they can grow/shrink
         final int DELAY = 0;
+
         Timer t = new Timer(DELAY, event -> {
             scene.repaint();
         });
@@ -108,7 +113,7 @@ public class Frame extends JFrame {
                     scene.startTimer();
 
                 // Resets "earned a point" indicator
-                scene.resetAnimate();
+                scene.resetPointAnimation();
 
                 // If the timer hits 0 (game ended)
                 if (scene.getTime() == 0) {
@@ -227,5 +232,6 @@ public class Frame extends JFrame {
 
     public static void main(String[] args) {
         Frame x = new Frame();
+ 
     }
 }
