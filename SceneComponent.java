@@ -126,9 +126,27 @@ public class SceneComponent extends JComponent {
 		if (moleHasBeenClicked) {
 			g.setColor(new Color(0x05820b));
 			g.drawString("+1", moleX - 40, moleY - 175);
+			animate();
+			
 		}
 	}
 
+	public void animate()
+	{
+	    for( int i = 1; i < 3; i++ )
+	    {
+	        moleY--;
+
+	        repaint();
+
+	        try
+	        {
+	            Thread.sleep(1);
+	        }
+	        catch(InterruptedException ex) { }
+	    }
+	}
+	
 	/**
 	 * Checks whether the 60 second Timer has started
 	 * @return true if the Timer has started

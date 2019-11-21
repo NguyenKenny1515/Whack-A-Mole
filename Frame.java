@@ -51,11 +51,11 @@ public class Frame extends JFrame {
         // Sets speed at which Holes and Mole spawn depending on difficulty selected
         int speed = 0;
         if (difficulty == 0)
-            speed = 500;
+            speed = 800;
         else if (difficulty == 1)
-            speed = 250;
+            speed = 650;
         else if (difficulty == 2)
-            speed = 10;
+            speed = 500;
         else
             System.exit(0);
 
@@ -79,8 +79,10 @@ public class Frame extends JFrame {
         scene.add(hole6);
         scene.add(mole);
 
+
         // Sets up holes and mole on screen and adds animation timers to them so they can grow/shrink
         final int DELAY = 0;
+
         Timer t = new Timer(DELAY, event -> {
             scene.repaint();
         });
@@ -227,5 +229,6 @@ public class Frame extends JFrame {
 
     public static void main(String[] args) {
         Frame x = new Frame();
+ 
     }
 }
