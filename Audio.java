@@ -20,7 +20,7 @@ public class Audio {
      */
     public Audio(String filepath) {
         this.filePath = filepath;
-
+        status = "";
         try {
             File musicPath = new File(filePath);
             if (musicPath.exists()) {
