@@ -9,6 +9,7 @@ public class Frame extends JFrame {
 
     public Frame() {
 
+        // Creates the Frame
         JFrame frame = new JFrame("Whack-A-Mole");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -16,13 +17,52 @@ public class Frame extends JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(screenSize.width, screenSize.height);
 
-        final SceneComponent scene = new SceneComponent();
-        
- 
+        // Changes default Windows cursor to custom hammer image
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Image image = toolkit.getImage("src\\hammer.png");
+        Image scaledImage = image.getScaledInstance(500, 500, Image.SCALE_DEFAULT);
+        Cursor cursor = toolkit.createCustomCursor(scaledImage , new Point(frame.getX(), frame.getY()), "hammer");
+        frame.setCursor(cursor);
 
-  
-        
+        // Sets background.png as wallpaper
+        JLabel background = new JLabel("");
+        background.setIcon(new ImageIcon("src\\background.png"));
+        background.setBounds(0,0, screenSize.width, screenSize.height);
+
+        // Creates the scene
+        final SceneComponent scene = new SceneComponent();
+
+        // ArrayLists to store holes and names. FOR NAMES MIGHT WANT TO CHANGE TO HASH MAP. KEY = NAME. VALUE = SCORE
+        ArrayList<Hole> holes = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
+
+        // When game starts up, asks for user's name to save their scores to hi-scores
         String name = JOptionPane.showInputDialog("Enter Player Name");
+        names.add(name);
+        // If user presses cancel, exits the program
+        if (name == null)
+            System.exit(0);
+
+        // Asks users what difficulty they want to play on
+        String[] difficultyChoices = {"Easy", "Normal", "Hard"};
+        int difficulty = JOptionPane.showOptionDialog(null, "Choose game difficulty: ",
+                "Choose difficulty", JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE, null, difficultyChoices, difficultyChoices[1]);
+        // Sets speed at which Holes and Mole spawn depending on difficulty selected
+        int speed = 0;
+        if (difficulty == 0)
+            speed = 500;
+        else if (difficulty == 1)
+            speed = 250;
+        else if (difficulty == 2)
+            speed = 10;
+        else
+            System.exit(0);
+
+        // Plays the music after difficulty has been chosen and speed has been set
+        Audio backgroundMusic = new Audio("src\\GameMusic.wav");
+        backgroundMusic.play();
+
         // Creates 5 Holes and Mole and adds them to the scene
         final Hole hole = new Hole(-100, 0, 0, 0);
         final Hole hole2 = new Hole(-100, 0, 0, 0);
@@ -39,7 +79,7 @@ public class Frame extends JFrame {
         scene.add(hole6);
         scene.add(mole);
 
-        // Sets up holes and mole on screen
+        // Sets up holes and mole on screen and adds animation timers to them so they can grow/shrink
         final int DELAY = 0;
         Timer t = new Timer(DELAY, event -> {
             scene.repaint();
@@ -53,80 +93,102 @@ public class Frame extends JFrame {
         mole.addAnimateTimer(t);
         t.start();
 
-        String[] options = {"Play again", "Main Menu" , "Hi-Scores", "Exit"};
+        // Creates the high score screen
         JLabel hiscoreName = new JLabel();
         hiscoreName.setBounds(0,0,300,500);
         JLabel hiscoreNumber = new JLabel();
-        
-        // Generate random hole and mole locations and have them start appearing
-        ArrayList<Hole> holes = new ArrayList<>();
-        ArrayList<String> names = new ArrayList<String>();
-        names.add(name);
-        Timer animator = new Timer(500, animationEvent ->
-        {
-        
-            // If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
+
+        // Run the actual game play
+        Timer animator = new Timer(speed, animationEvent -> {
+            // If any Hole shrinks down to 0 (board is clear and has no Holes)
             if (hole.getWidth() == 0) {
-            	if(scene.time >= 0) {
-            	scene.time = scene.time - 1;
-            	}
-            	 if(scene.time == 0) {
-            	        int x = JOptionPane.showOptionDialog(null, "GAME OVER! Your score was: " + scene.score,
-            	                "Click a button",
-            	                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-            	        if(x == 3) {
-            	        	 	System.exit(0);
-            	        }else if(x == 0) {
-            	        	String name2 = JOptionPane.showInputDialog("Enter Player Name");
-            	        	names.add(name2);
-            	        	scene.time = 5;
-            	        	scene.score = 0;
-            	        }else if (x == 2) {
-            	        	JFrame hiscores = new JFrame();
-            	        	for(String q: names) {
-            	        		hiscoreName.setText(q + "\n");
-            	        	}
-            	        	
-            	        	hiscores.add(hiscoreName);
-            	        	hiscores.add(hiscoreNumber);
-            	        	hiscores.setSize(300,600);
-            	        	hiscores.setLayout(new FlowLayout());
-            	        	hiscores.setVisible(true);
-            	    
-            	        }
-                	 
+
+                // If Timer is not already running, start it (for at the start)
+                if (!scene.hasTimerStarted())
+                    scene.startTimer();
+
+                // Resets "earned a point" indicator
+                scene.resetAnimate();
+
+                // If the timer hits 0 (game ended)
+                if (scene.getTime() == 0) {
+                    backgroundMusic.stop();
+                    scene.setTimerStarted(false);
+
+                    // Ask users for their next action: play again, view highest scores, or quit program
+                    String[] options = {"Play again", "Hi-Scores", "Exit"};
+                    int userChoice = JOptionPane.showOptionDialog(null, "GAME OVER! " +
+                                    "Your score was: " + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+                    // If user chose play again, ask for their name and replays game on same difficulty
+                    if (userChoice == 0) {
+                        String name2 = JOptionPane.showInputDialog("Enter Player Name");
+                        names.add(name2);
+                        scene.setScore(0);
+                        scene.setTime(60);
+                        scene.startTimer();
+                        scene.setTimerStarted(true);
+                        try {
+                            backgroundMusic.restart();
+                        }
+                        catch(Exception e) {
+                            System.out.println("Error with playing sound.");
+                            e.printStackTrace();
+                        }
+                    }
+                    // If user chose to view highest score, display a separate Frame showing list of highest scores
+                    // of this session.
+                    // SCOTT FIX THIS PART SAVE US
+                    else if (userChoice == 1) {
+                        JFrame hiscores = new JFrame();
+                        hiscores.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                        for (String aName: names) {
+                            hiscoreName.setText(aName + "\n");
+                            hiscores.add(hiscoreName);
+                            hiscores.add(hiscoreNumber);
+                        }
+                        hiscores.setSize(300,600);
+                        hiscores.setLayout(new FlowLayout());
+                        hiscores.setVisible(true);
+                    }
+                    // If user chose exit, quit the program
+                    if (userChoice == 2) {
+                        System.exit(0);
+                    }
                 }
-                //bottom left
+
+                // Generate random coordinates for bottom left Hole
                 hole.setX((int) (Math.random() * (screenSize.width / 5 - 125)) + 125);
                 hole.setY((int) (Math.random() * ((screenSize.height - 100) - screenSize.height * 5/7)) +
                         screenSize.height * 5/7);
 
-                // bottom left middle
+                // Generate random coordinates for bottom left middle Hole
                 hole2.setX((int) (Math.random() * (screenSize.width /2 - screenSize.width /4)) +
                         screenSize.width /4);
                 hole2.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4)) +
                         screenSize.height * 3/4));
 
-                // bottom right middle
+                // Generate random coordinates for bottom right middle Hole
                 hole3.setX((int) (Math.random() * (((screenSize.width * 3/4 - 50 )- screenSize.width /2 - 25) -
                         screenSize.width / 2 - 25)) +
                         screenSize.width * 4 / 5);
                 hole3.setY((int) (Math.random() * ((screenSize.height - 100 - screenSize.height * 3/4 + 5)) +
                         screenSize.height * 3/4 + 5));
 
-                // bottom right
+                // Generate random coordinates for bottom right Hole
                 hole4.setX((int) (Math.random() *( (screenSize.width * 3/4) - screenSize.width * 3/4 + 125)) +
                         screenSize.width * 3/4 + 125);
                 hole4.setY((int) (Math.random() * ((screenSize.height - 125 ) - screenSize.height * 2 / 3 + 5 + 25)) +
                         screenSize.height * 2 / 3 + 25);
 
-                // top left
+                // Generate random coordinates for top left Hole
                 hole5.setX((int) (Math.random() * ((screenSize.width / 2 - 25)  - screenSize.width /4)) +
                         screenSize.width / 4);
                 hole5.setY((int) (Math.random() * ((screenSize.height * 3/4 - 100 ) - screenSize.height * 3/5 + 25)) +
                         screenSize.height  * 3 / 5 + 25);
 
-                // top right
+                // Generate random coordinates for top right Hole
                 hole6.setX((int) (Math.random() * ((screenSize.width * 6 /7 - 250) - screenSize.width * 4/7) - 25) +
                         screenSize.width * 4/7 - 25);
                 hole6.setY((int) (Math.random() * ((screenSize.height * 4/5 - 75 ) - screenSize.height * 3/5)) +
@@ -152,27 +214,12 @@ public class Frame extends JFrame {
             hole4.animate();
             hole5.animate();
             hole6.animate();
-
-            // Add delay here so mole doesn't come out too fast
             mole.animate();
         }
         );
         animator.start();
 
-       
-        // Changes default Windows cursor to custom hammer image
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Image image = toolkit.getImage("src\\hammer.png");
-        Image scaledImage = image.getScaledInstance(500, 500, Image.SCALE_DEFAULT);
-        Cursor cursor = toolkit.createCustomCursor(scaledImage , new Point(frame.getX(), frame.getY()), "hammer");
-        frame.setCursor(cursor);
-
-        // Sets background.png as wallpaper
-        JLabel background = new JLabel("");
-        background.setIcon(new ImageIcon("src\\background.png"));
-        background.setBounds(0,0, screenSize.width, screenSize.height);
-
-        // Must appear in this order or else png gets masked over holes & mole
+        // Must appear in this order or else png wallpaper gets masked over holes & mole
         frame.add(scene);
         frame.setVisible(true);
         frame.add(background);
@@ -180,7 +227,5 @@ public class Frame extends JFrame {
 
     public static void main(String[] args) {
         Frame x = new Frame();
-        Audio a = new Audio("src\\GameMusic.wav");
-        a.play();
     }
 }
