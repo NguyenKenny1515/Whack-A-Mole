@@ -34,7 +34,7 @@ public class Mole implements GrowableShape {
 		this.size = width;
 		this.height = startHeight;
 		this.animating = true;
-    this.hittable = true;
+    	this.hittable = true;
 		this.status = Status.GROWING;
 	}
 
@@ -74,6 +74,10 @@ public class Mole implements GrowableShape {
 				size/8, size/8);
 		Ellipse2D.Double rightNostril = new Ellipse2D.Double(x + (size/12), y - height - size/6, size/8,
 				size/8);
+		Ellipse2D.Double leftEye = new Ellipse2D.Double(x - (size/12) - (size/10), y - height - size/2.5,
+				size/12, size/12);
+		Ellipse2D.Double rightEye = new Ellipse2D.Double(x + (size/12), y - height - size/2.5,
+				size/12, size/12);
 
 		g2.setColor(new Color(0xD0A43D));
 		g2.fill(head);
@@ -83,6 +87,10 @@ public class Mole implements GrowableShape {
 		g2.setColor(Color.BLACK);
 		g2.draw(leftNostril);
 		g2.draw(rightNostril);
+		g2.fill(leftEye);
+		g2.draw(leftEye);
+		g2.fill(rightEye);
+		g2.draw(rightEye);
 	}
 	
 	/**

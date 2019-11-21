@@ -1,7 +1,4 @@
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -9,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JComponent;
 
 /**
- * A component that shows a scene composed of shapes that is displayed by Frame.
+ * A component that shows a scene composed of shapes that is displayed by Frame. Manages the entire game.
  */
 public class SceneComponent extends JComponent{
 
@@ -20,11 +17,17 @@ public class SceneComponent extends JComponent{
 	private int moleY;
 	private Point mousePoint;
 	private ArrayList<GrowableShape> shapes;
+	private Dimension screenSize;
+	private Audio hitSound;
+	private boolean timerStarted;
 
 	public SceneComponent() {
 		this.shapes = new ArrayList<>();
 		this.time = 60;
 		addMouseListener(new MousePressedListener());
+		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		hitSound = new Audio("src\\HitSound.wav");
+		timerStarted = false;
 	}
 	
 	private class MousePressedListener extends MouseAdapter {
@@ -38,10 +41,44 @@ public class SceneComponent extends JComponent{
 					moleX = s.getX();
 					moleY = s.getY();
 					break;
+					hitSound.play();
 				}
 			}
 			repaint();         
 		}
+	}
+
+	public void startTimer() {
+		Thread thread = new Thread(new Runnable () {
+			@Override
+			public void run() {
+				for (int i = 60; i >= 1; i--) {
+					try {
+						Thread.sleep(1000);
+						time--;
+					}
+					catch (InterruptedException e) {}
+				}
+			}
+		});
+		thread.start();
+		timerStarted = true;
+	}
+
+	public int getTime() {
+		return time;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public boolean isTimerStarted() {
+		return timerStarted;
+	}
+
+	public void setTimerStarted(boolean timerStarted) {
+		this.timerStarted = timerStarted;
 	}
 
 	/**
@@ -52,17 +89,9 @@ public class SceneComponent extends JComponent{
 		shapes.add(s);
 		repaint();
 	}
-	
-	public int getTime() {
-		return time;
-	}
 
 	public int getScore() {
 		return score;
-	}
-
-	public void setTime(int time) {
-		this.time = time;
 	}
 
 	public void setScore(int score) {
@@ -78,24 +107,22 @@ public class SceneComponent extends JComponent{
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
+		g.setColor(Color.BLACK);
 		for (GrowableShape s : shapes)
 			s.draw(g2);
-		g.setFont(new Font("Arial", Font.PLAIN, 30));
-		g.drawString("SCORE: " + score, 1, 30);
-		g.setFont(new Font("Arial", Font.PLAIN, 30));
-		g.drawString("TIMER: " + time, 1750 , 30);
-		if (newHit)
-		{
+
+		g.setFont(new Font("Arial", Font.BOLD, 70));
+		g.drawString("SCORE: " + score, 0, 65);
+		g.setFont(new Font("Arial", Font.BOLD, 70));
+
+		// Warning indicator
+		if (time <= 10)
+			g.setColor(Color.RED);
+
+		g.drawString("TIMER: " + time, screenSize.width - 370 , 65);
+    
+    if (newHit) {
 			g.drawString("+1", moleX-20, moleY - 175);
 		}
 	}
-  
-  // SUPPOSED TO BE THE ONE-MINUTE COUNTDOWN (KENNY START HERE)
-	//Timer timer = new Timer();
-	/*TimerTask task = new TimerTask() {
-		public void run() {
-			time--;
-			timer.scheduleAtFixedRate(task,1000,1000);
-		}
-	};*/
 }

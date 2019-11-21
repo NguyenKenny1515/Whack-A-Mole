@@ -20,14 +20,13 @@ public class Audio {
      */
     public Audio(String filepath) {
         this.filePath = filepath;
-
+        status = "";
         try {
             File musicPath = new File(filePath);
             if (musicPath.exists()) {
                 AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
                 clip = AudioSystem.getClip();
                 clip.open(audioInput);
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
             else {
                 System.out.println("Can't find file");

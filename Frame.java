@@ -19,6 +19,13 @@ public class Frame extends JFrame {
         final SceneComponent scene = new SceneComponent();
         
         String name = JOptionPane.showInputDialog("Enter Player Name");
+        // If user presses cancel
+        if (name == null)
+            System.exit(0);
+
+        Audio backgroundMusic = new Audio("src\\GameMusic.wav");
+        backgroundMusic.play();
+
         // Creates 5 Holes and Mole and adds them to the scene
         final Hole hole = new Hole(-100, 0, 0, 0);
         final Hole hole2 = new Hole(-100, 0, 0, 0);
@@ -49,7 +56,7 @@ public class Frame extends JFrame {
         mole.addAnimateTimer(t);
         t.start();
 
-        String[] options = {"Play again", "Main Menu" , "Hi-Scores", "Exit"};
+        String[] options = {"Play again", "Hi-Scores", "Exit"};
         JLabel hiscoreName = new JLabel();
         hiscoreName.setBounds(0,0,300,500);
         JLabel hiscoreNumber = new JLabel();
@@ -58,34 +65,41 @@ public class Frame extends JFrame {
         ArrayList<Hole> holes = new ArrayList<>();
         ArrayList<String> names = new ArrayList<>();
         names.add(name);
+
         Timer animator = new Timer(500, animationEvent -> {
             // If any Hole shrinks down to 0 (board is clear and has no Holes), find a new random x and y to respawn
             if (hole.getWidth() == 0) {
+                if (!scene.isTimerStarted())
+                    scene.startTimer();
 
-            	scene.resetAnimate();
-            	if(scene.getTime() >= 0) {
-            	    scene.setTime(scene.getTime() - 1);
-            	}
-                if(scene.getTime() == 0) {
-                    int x = JOptionPane.showOptionDialog(null, "GAME OVER! Your score was: " +
-                                    "" + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
+                scene.resetAnimate();
+                if (scene.getTime() == 0) {
+                    backgroundMusic.stop();
+                    scene.setTimerStarted(false);
+
+                    int userChoice = JOptionPane.showOptionDialog(null, "GAME OVER! " +
+                                    "Your score was: " + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
                             JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-                    if(x == 3) {
+
+                    if (userChoice == 2) {
                         System.exit(0);
                     }
-                    else if(x == 0) {
+                    else if (userChoice == 0) {
                         String name2 = JOptionPane.showInputDialog("Enter Player Name");
                         names.add(name2);
-                        scene.setTime(59);
                         scene.setScore(0);
+                        backgroundMusic.play();
+                        scene.setTime(60);
+                        scene.startTimer();
+                        scene.setTimerStarted(true);
                     }
-                    else if (x == 2) {
+                    else if (userChoice == 1) {
                         JFrame hiscores = new JFrame();
-                        for (String q: names)
-                            hiscoreName.setText(q + "\n");
-            	        	
-                        hiscores.add(hiscoreName);
-                        hiscores.add(hiscoreNumber);
+                        for (String aName: names) {
+                            hiscoreName.setText(aName + "\n");
+                            hiscores.add(hiscoreName);
+                            hiscores.add(hiscoreNumber);
+                        }
                         hiscores.setSize(300,600);
                         hiscores.setLayout(new FlowLayout());
                         hiscores.setVisible(true);
@@ -176,7 +190,5 @@ public class Frame extends JFrame {
 
     public static void main(String[] args) {
         Frame x = new Frame();
-        Audio a = new Audio("src\\GameMusic.wav");
-        a.play();
     }
 }
