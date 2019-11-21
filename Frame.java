@@ -40,7 +40,7 @@ public class Frame extends JFrame {
         scene.add(mole);
 
         // Sets up holes and mole on screen
-        final int DELAY = 0;
+        final int DELAY = 20;
         Timer t = new Timer(DELAY, event -> {
             scene.repaint();
         });
