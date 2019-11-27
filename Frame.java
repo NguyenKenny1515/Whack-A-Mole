@@ -126,13 +126,14 @@ public class Frame extends JFrame {
                     backgroundMusic.stop();
                     scene.setTimerStarted(false);
 
-                    scores = scores + name + "  -  " + scene.getScore() + "<br/>";
+
 
                     // Creates hiscores screen first to prevent weird window priority issues
                     JFrame hiscores = new JFrame();
-                    hiscores.setSize(300, 600);
+                    hiscores.setSize(400, 600);
                     hiscores.setLayout(new FlowLayout());
                     hiscores.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    scores = scores + name + ":  " + scene.getScore() + "<br/>";
 
                     // Ask users for their next action: play again, view highest scores, or quit program
                     String[] options = {"Play again", "Hi-Scores", "Exit"};
@@ -163,7 +164,7 @@ public class Frame extends JFrame {
                         // If user chose to view scores, display a separate Frame showing list of highest scores
                         // of this session.
                         else if (userChoice == 1) {
-                            allScores.setText("<html>" + scores + "</html>");
+                            allScores.setText("<html><b><font size=\"30\">" + scores + "</font></b></html>");
                             hiscores.add(allScores);
                             hiscores.setVisible(true);
                         }
@@ -194,7 +195,7 @@ public class Frame extends JFrame {
                         screenSize.height * 3/4 + 5));
 
                 // Generate random coordinates for bottom right Hole
-                hole4.setX((int) (Math.random() *( (screenSize.width * 3/4) - screenSize.width * 3/4 + 125)) +
+                hole4.setX((int) (Math.random() *(125)) +
                         screenSize.width * 3/4 + 125);
                 hole4.setY((int) (Math.random() * ((screenSize.height - 125 ) - screenSize.height * 2 / 3 + 5 + 25)) +
                         screenSize.height * 2 / 3 + 25);
@@ -219,7 +220,7 @@ public class Frame extends JFrame {
                 holes.add(hole6);
 
                 // Pick the random hole for the mole to come out of
-                int random = (int) (Math.random() * 6 - 0) + 0;
+                int random = (int) (Math.random() * 6 - 0);
                 Hole randomHole = holes.get(random);
                 mole.setX(randomHole.getX());
                 mole.setY(randomHole.getY());
