@@ -1,10 +1,7 @@
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.ArrayList;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JComponent;
 
 /**
@@ -96,10 +93,24 @@ public class SceneComponent extends JComponent {
 	/**
 	 * Resets variables for the "earned a point" indicator since Holes and Mole are going to respawn to new locations
 	 */
-	public void resetAnimate() {
+	public void resetPointAnimation() {
 		moleHasBeenClicked = false;
 		moleX = 0;
 		moleY = 0;
+	}
+
+	/**
+	 * Animates the "earned a point" indicator floating up after Mole has been clicked
+	 */
+	public void pointAnimation() {
+		for( int i = 1; i < 3; i++ ) {
+			moleY--;
+			repaint();
+			try {
+				Thread.sleep(1);
+			}
+			catch(InterruptedException ex) { }
+		}
 	}
 
 	/**
@@ -126,25 +137,8 @@ public class SceneComponent extends JComponent {
 		if (moleHasBeenClicked) {
 			g.setColor(new Color(0x05820b));
 			g.drawString("+1", moleX - 40, moleY - 175);
-			animate();
-			
+			pointAnimation();
 		}
-	}
-
-	public void animate()
-	{
-	    for( int i = 1; i < 3; i++ )
-	    {
-	        moleY--;
-
-	        repaint();
-
-	        try
-	        {
-	            Thread.sleep(1);
-	        }
-	        catch(InterruptedException ex) { }
-	    }
 	}
 	
 	/**

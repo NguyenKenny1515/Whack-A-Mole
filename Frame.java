@@ -1,11 +1,20 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.swing.*;
 
 /**
  * Displays the entire game inside JFrame.
  */
 public class Frame extends JFrame {
+
+    private static final int EASY = 800;
+    private static final int NORMAL = 650;
+    private static final int HARD = 500;
+
+    private String scores;
+    private String name;
 
     public Frame() {
 
@@ -32,13 +41,15 @@ public class Frame extends JFrame {
         // Creates the scene
         final SceneComponent scene = new SceneComponent();
 
-        // ArrayLists to store holes and names. FOR NAMES MIGHT WANT TO CHANGE TO HASH MAP. KEY = NAME. VALUE = SCORE
+        // ArrayList to store holes.
         ArrayList<Hole> holes = new ArrayList<>();
-        ArrayList<String> names = new ArrayList<>();
+        
+        // A String to store all scores.
+        scores = "";
 
         // When game starts up, asks for user's name to save their scores to hi-scores
-        String name = JOptionPane.showInputDialog("Enter Player Name");
-        names.add(name);
+        name = JOptionPane.showInputDialog("Enter Player Name");
+
         // If user presses cancel, exits the program
         if (name == null)
             System.exit(0);
@@ -51,11 +62,11 @@ public class Frame extends JFrame {
         // Sets speed at which Holes and Mole spawn depending on difficulty selected
         int speed = 0;
         if (difficulty == 0)
-            speed = 800;
+            speed = EASY;
         else if (difficulty == 1)
-            speed = 650;
+            speed = NORMAL;
         else if (difficulty == 2)
-            speed = 500;
+            speed = HARD;
         else
             System.exit(0);
 
@@ -79,7 +90,6 @@ public class Frame extends JFrame {
         scene.add(hole6);
         scene.add(mole);
 
-
         // Sets up holes and mole on screen and adds animation timers to them so they can grow/shrink
         final int DELAY = 0;
 
@@ -96,9 +106,8 @@ public class Frame extends JFrame {
         t.start();
 
         // Creates the high score screen
-        JLabel hiscoreName = new JLabel();
-        hiscoreName.setBounds(0,0,300,500);
-        JLabel hiscoreNumber = new JLabel();
+        JLabel allScores = new JLabel();
+        allScores.setBounds(0,0,300,500);
 
         // Run the actual game play
         Timer animator = new Timer(speed, animationEvent -> {
@@ -110,54 +119,61 @@ public class Frame extends JFrame {
                     scene.startTimer();
 
                 // Resets "earned a point" indicator
-                scene.resetAnimate();
+                scene.resetPointAnimation();
 
                 // If the timer hits 0 (game ended)
                 if (scene.getTime() == 0) {
                     backgroundMusic.stop();
                     scene.setTimerStarted(false);
 
+
+
+                    // Creates hiscores screen first to prevent weird window priority issues
+                    JFrame hiscores = new JFrame();
+                    hiscores.setSize(400, 600);
+                    hiscores.setLayout(new FlowLayout());
+                    hiscores.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    scores = scores + name + ":  " + scene.getScore() + "<br/>";
+
                     // Ask users for their next action: play again, view highest scores, or quit program
                     String[] options = {"Play again", "Hi-Scores", "Exit"};
-                    int userChoice = JOptionPane.showOptionDialog(null, "GAME OVER! " +
-                                    "Your score was: " + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                    int userChoice = -1;
+                    while (userChoice != 0) {
+                        userChoice = JOptionPane.showOptionDialog(null, "GAME OVER! " +
+                                        "Your score was: " + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 
-                    // If user chose play again, ask for their name and replays game on same difficulty
-                    if (userChoice == 0) {
-                        String name2 = JOptionPane.showInputDialog("Enter Player Name");
-                        names.add(name2);
-                        scene.setScore(0);
-                        scene.setTime(60);
-                        scene.startTimer();
-                        scene.setTimerStarted(true);
-                        try {
-                            backgroundMusic.restart();
+                        // If user chose play again, ask for their name and replays game on same difficulty
+                        if (userChoice == 0) {
+                            hiscores.setVisible(false);
+                            name = JOptionPane.showInputDialog("Enter Player Name");
+                            // If user presses cancel, exits the program
+                            if (name == null)
+                                System.exit(0);
+                            scene.setScore(0);
+                            scene.setTime(60);
+                            scene.startTimer();
+                            scene.setTimerStarted(true);
+                            try {
+                                backgroundMusic.restart();
+                            } catch (Exception e) {
+                                System.out.println("Error with playing sound.");
+                                e.printStackTrace();
+                            }
                         }
-                        catch(Exception e) {
-                            System.out.println("Error with playing sound.");
-                            e.printStackTrace();
+                        // If user chose to view scores, display a separate Frame showing list of highest scores
+                        // of this session.
+                        else if (userChoice == 1) {
+                            allScores.setText("<html><b><font size=\"30\">" + scores + "</font></b></html>");
+                            hiscores.add(allScores);
+                            hiscores.setVisible(true);
+                        }
+                        // If user chose exit, quit the program
+                        if (userChoice == 2) {
+                            System.exit(0);
                         }
                     }
-                    // If user chose to view highest score, display a separate Frame showing list of highest scores
-                    // of this session.
-                    // SCOTT FIX THIS PART SAVE US
-                    else if (userChoice == 1) {
-                        JFrame hiscores = new JFrame();
-                        hiscores.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                        for (String aName: names) {
-                            hiscoreName.setText(aName + "\n");
-                            hiscores.add(hiscoreName);
-                            hiscores.add(hiscoreNumber);
-                        }
-                        hiscores.setSize(300,600);
-                        hiscores.setLayout(new FlowLayout());
-                        hiscores.setVisible(true);
-                    }
-                    // If user chose exit, quit the program
-                    if (userChoice == 2) {
-                        System.exit(0);
-                    }
+
                 }
 
                 // Generate random coordinates for bottom left Hole
@@ -179,7 +195,7 @@ public class Frame extends JFrame {
                         screenSize.height * 3/4 + 5));
 
                 // Generate random coordinates for bottom right Hole
-                hole4.setX((int) (Math.random() *( (screenSize.width * 3/4) - screenSize.width * 3/4 + 125)) +
+                hole4.setX((int) (Math.random() *(125)) +
                         screenSize.width * 3/4 + 125);
                 hole4.setY((int) (Math.random() * ((screenSize.height - 125 ) - screenSize.height * 2 / 3 + 5 + 25)) +
                         screenSize.height * 2 / 3 + 25);
@@ -204,7 +220,7 @@ public class Frame extends JFrame {
                 holes.add(hole6);
 
                 // Pick the random hole for the mole to come out of
-                int random = (int) (Math.random() * 6 - 0) + 0;
+                int random = (int) (Math.random() * 6 - 0);
                 Hole randomHole = holes.get(random);
                 mole.setX(randomHole.getX());
                 mole.setY(randomHole.getY());
@@ -229,6 +245,5 @@ public class Frame extends JFrame {
 
     public static void main(String[] args) {
         Frame x = new Frame();
- 
     }
 }
