@@ -12,9 +12,9 @@ public class Frame extends JFrame {
     private static final int EASY = 800;
     private static final int NORMAL = 650;
     private static final int HARD = 500;
-    
-    String scores;
-    String name;
+
+    private String scores;
+    private String name;
 
     public Frame() {
 
@@ -49,6 +49,7 @@ public class Frame extends JFrame {
 
         // When game starts up, asks for user's name to save their scores to hi-scores
         name = JOptionPane.showInputDialog("Enter Player Name");
+
         // If user presses cancel, exits the program
         if (name == null)
             System.exit(0);
@@ -124,13 +125,13 @@ public class Frame extends JFrame {
                 if (scene.getTime() == 0) {
                     backgroundMusic.stop();
                     scene.setTimerStarted(false);
+
                     scores = scores + name + "  -  " + scene.getScore() + "<br/>";
 
                     // Ask users for their next action: play again, view highest scores, or quit program
                     String[] options = {"Play again", "Hi-Scores", "Exit"};
                     int userChoice = -1;
-                    while (userChoice != 0)
-                    {
+                    while (userChoice != 0) {
 	                    userChoice = JOptionPane.showOptionDialog(null, "GAME OVER! " +
 	                                    "Your score was: " + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
 	                            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
@@ -160,10 +161,9 @@ public class Frame extends JFrame {
 	                        hiscores.setLayout(new FlowLayout());
 	                        hiscores.setVisible(true);
 	                    }
-	                    // If user chose exit, quit the program
-	                    if (userChoice == 2) {
-	                        System.exit(0);
-	                    }
+                    // If user chose exit, quit the program
+                    if (userChoice == 2) {
+                        System.exit(0);
                     }
                 }
 
