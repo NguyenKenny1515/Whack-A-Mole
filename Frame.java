@@ -128,43 +128,51 @@ public class Frame extends JFrame {
 
                     scores = scores + name + "  -  " + scene.getScore() + "<br/>";
 
+                    // Creates hiscores screen first to prevent weird window priority issues
+                    JFrame hiscores = new JFrame();
+                    hiscores.setSize(300, 600);
+                    hiscores.setLayout(new FlowLayout());
+                    hiscores.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
                     // Ask users for their next action: play again, view highest scores, or quit program
                     String[] options = {"Play again", "Hi-Scores", "Exit"};
                     int userChoice = -1;
                     while (userChoice != 0) {
-	                    userChoice = JOptionPane.showOptionDialog(null, "GAME OVER! " +
-	                                    "Your score was: " + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
-	                            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-	
-	                    // If user chose play again, ask for their name and replays game on same difficulty
-	                    if (userChoice == 0) {
-	                        name = JOptionPane.showInputDialog("Enter Player Name");
-	                        scene.setScore(0);
-	                        scene.setTime(60);
-	                        scene.startTimer();
-	                        scene.setTimerStarted(true);
-	                        try {
-	                            backgroundMusic.restart();
-	                        }
-	                        catch(Exception e) {
-	                            System.out.println("Error with playing sound.");
-	                            e.printStackTrace();
-	                        }
-	                    }
-	                    // If user chose to view scores, display a separate Frame showing list of highest scores
-	                    // of this session.
-	                    else if (userChoice == 1) {
-	                        JFrame hiscores = new JFrame();
-	                        allScores.setText("<html>" + scores + "</html>");
-	                        hiscores.add(allScores);
-	                        hiscores.setSize(300,600);
-	                        hiscores.setLayout(new FlowLayout());
-	                        hiscores.setVisible(true);
-	                    }
-                    // If user chose exit, quit the program
-                    if (userChoice == 2) {
-                        System.exit(0);
+                        userChoice = JOptionPane.showOptionDialog(null, "GAME OVER! " +
+                                        "Your score was: " + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+                        // If user chose play again, ask for their name and replays game on same difficulty
+                        if (userChoice == 0) {
+                            hiscores.setVisible(false);
+                            name = JOptionPane.showInputDialog("Enter Player Name");
+                            // If user presses cancel, exits the program
+                            if (name == null)
+                                System.exit(0);
+                            scene.setScore(0);
+                            scene.setTime(60);
+                            scene.startTimer();
+                            scene.setTimerStarted(true);
+                            try {
+                                backgroundMusic.restart();
+                            } catch (Exception e) {
+                                System.out.println("Error with playing sound.");
+                                e.printStackTrace();
+                            }
+                        }
+                        // If user chose to view scores, display a separate Frame showing list of highest scores
+                        // of this session.
+                        else if (userChoice == 1) {
+                            allScores.setText("<html>" + scores + "</html>");
+                            hiscores.add(allScores);
+                            hiscores.setVisible(true);
+                        }
+                        // If user chose exit, quit the program
+                        if (userChoice == 2) {
+                            System.exit(0);
+                        }
                     }
+
                 }
 
                 // Generate random coordinates for bottom left Hole
@@ -236,6 +244,5 @@ public class Frame extends JFrame {
 
     public static void main(String[] args) {
         Frame x = new Frame();
- 
     }
 }
