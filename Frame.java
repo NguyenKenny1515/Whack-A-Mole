@@ -130,7 +130,7 @@ public class Frame extends JFrame {
                     JFrame hiscores = new JFrame();
                     hiscores.setSize(400, 600);
                     hiscores.setLayout(new FlowLayout());
-                    hiscores.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    hiscores.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     scores = scores + name + ":  " + scene.getScore() + "<br/>";
 
                     // Ask users for their next action: play again, view highest scores, or quit program
