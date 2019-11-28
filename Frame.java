@@ -12,9 +12,9 @@ public class Frame extends JFrame {
     private static final int EASY = 800;
     private static final int NORMAL = 650;
     private static final int HARD = 500;
-
-    private String scores;
-    private String name;
+    
+    String scores;
+    String name;
 
     public Frame() {
 
@@ -49,7 +49,6 @@ public class Frame extends JFrame {
 
         // When game starts up, asks for user's name to save their scores to hi-scores
         name = JOptionPane.showInputDialog("Enter Player Name");
-
         // If user presses cancel, exits the program
         if (name == null)
             System.exit(0);
@@ -127,17 +126,17 @@ public class Frame extends JFrame {
                     scene.setTimerStarted(false);
 
 
-
                     // Creates hiscores screen first to prevent weird window priority issues
                     JFrame hiscores = new JFrame();
                     hiscores.setSize(400, 600);
                     hiscores.setLayout(new FlowLayout());
-                    hiscores.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    hiscores.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     scores = scores + name + ":  " + scene.getScore() + "<br/>";
 
                     // Ask users for their next action: play again, view highest scores, or quit program
                     String[] options = {"Play again", "Hi-Scores", "Exit"};
                     int userChoice = -1;
+                  
                     while (userChoice != 0) {
                         userChoice = JOptionPane.showOptionDialog(null, "GAME OVER! " +
                                         "Your score was: " + scene.getScore(), "Click a button", JOptionPane.DEFAULT_OPTION,
