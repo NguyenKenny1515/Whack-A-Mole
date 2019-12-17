@@ -13,8 +13,8 @@ public class Frame extends JFrame {
     private static final int NORMAL = 650;
     private static final int HARD = 500;
     
-    String scores;
-    String name;
+    private String scores;
+    private String name;
 
     public Frame() {
 
